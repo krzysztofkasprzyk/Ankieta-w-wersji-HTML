@@ -1,0 +1,2541 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ankieta badawcza - prototyp</title>
+  <style>
+    :root {
+      --bg: #f7f2e8;
+      --bg-soft: #fffaf2;
+      --panel: rgba(255, 252, 246, 0.9);
+      --panel-strong: #fffdfa;
+      --line: #d9d0c1;
+      --text: #17313e;
+      --muted: #586d77;
+      --accent: #127a72;
+      --accent-strong: #0b5b55;
+      --accent-soft: #daf1ee;
+      --warning: #b55d2b;
+      --warning-soft: #ffe6d6;
+      --shadow: 0 24px 64px rgba(23, 49, 62, 0.12);
+      --radius-lg: 26px;
+      --radius-md: 18px;
+      --radius-sm: 12px;
+      --font-head: "Aptos Display", "Trebuchet MS", "Segoe UI", sans-serif;
+      --font-body: "Aptos", "Verdana", "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--font-body);
+      font-size: 16px;
+      -webkit-text-size-adjust: 100%;
+      -webkit-tap-highlight-color: transparent;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(18, 122, 114, 0.14), transparent 22rem),
+        radial-gradient(circle at bottom left, rgba(181, 93, 43, 0.12), transparent 18rem),
+        linear-gradient(180deg, #fdf7ef 0%, var(--bg) 100%);
+    }
+
+    .page {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 28px 18px 40px;
+    }
+
+    .hero {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 24px;
+      border: 1px solid rgba(23, 49, 62, 0.08);
+      border-radius: 30px;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(248, 243, 233, 0.92)),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%23127a72' stroke-opacity='0.1'%3E%3Cpath d='M0 80h160M80 0v160'/%3E%3Ccircle cx='80' cy='80' r='46'/%3E%3Ccircle cx='80' cy='80' r='22'/%3E%3C/g%3E%3C/svg%3E");
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .hero-top {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      font-family: var(--font-head);
+      letter-spacing: -0.02em;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 4vw, 3.25rem);
+      line-height: 1.02;
+      max-width: 12ch;
+    }
+
+    p {
+      margin: 0;
+      line-height: 1.62;
+    }
+
+    .hero-copy {
+      display: grid;
+      gap: 10px;
+      max-width: 72ch;
+    }
+
+    .app-shell {
+      display: grid;
+      gap: 22px;
+      margin-top: 24px;
+      grid-template-columns: 290px minmax(0, 1fr);
+      align-items: start;
+    }
+
+    .sidebar,
+    .panel {
+      background: var(--panel);
+      border: 1px solid rgba(23, 49, 62, 0.08);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 18px;
+      padding: 22px;
+      border-radius: var(--radius-lg);
+      display: grid;
+      gap: 20px;
+    }
+
+    .panel {
+      border-radius: 30px;
+      padding: 26px;
+      min-height: 620px;
+      display: grid;
+      gap: 22px;
+      align-content: start;
+    }
+
+    .step-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .step-item {
+      display: grid;
+      grid-template-columns: 44px 1fr;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 18px;
+      border: 1px solid transparent;
+      background: rgba(255, 255, 255, 0.58);
+    }
+
+    .step-item.active {
+      border-color: rgba(18, 122, 114, 0.18);
+      background: linear-gradient(135deg, rgba(218, 241, 238, 0.78), rgba(255, 255, 255, 0.9));
+    }
+
+    .step-item.done .step-num {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .step-num {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 1.02rem;
+      background: #eef2ef;
+      color: var(--muted);
+    }
+
+    .step-item.active .step-num {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .step-title {
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .step-desc {
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+
+    .sidebar-meta {
+      display: grid;
+      gap: 10px;
+      padding: 16px;
+      border-radius: 18px;
+      background: var(--bg-soft);
+      border: 1px solid rgba(23, 49, 62, 0.08);
+    }
+
+    .sidebar-meta strong {
+      font-size: 0.95rem;
+    }
+
+    .section-head {
+      display: grid;
+      gap: 10px;
+    }
+
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.76rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .section-note,
+    .note-box,
+    .data-chip,
+    .summary-box,
+    .task-card,
+    .option-card,
+    .matrix-row,
+    .extra-card,
+    .timeline {
+      border: 1px solid rgba(23, 49, 62, 0.08);
+      background: var(--panel-strong);
+      border-radius: var(--radius-md);
+    }
+
+    .section-note,
+    .note-box,
+    .summary-box,
+    .task-card,
+    .timeline {
+      padding: 18px 20px;
+    }
+
+    .note-box {
+      background: linear-gradient(135deg, rgba(218, 241, 238, 0.86), rgba(255, 255, 255, 0.96));
+    }
+
+    .grid-two {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid-three {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .stack {
+      display: grid;
+      gap: 16px;
+    }
+
+    label {
+      font-weight: 700;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 13px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    select:focus,
+    textarea:focus {
+      border-color: rgba(18, 122, 114, 0.5);
+      box-shadow: 0 0 0 4px rgba(18, 122, 114, 0.12);
+    }
+
+    .check-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(23, 49, 62, 0.08);
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .check-row input {
+      margin-top: 4px;
+      transform: scale(1.2);
+    }
+
+    .choices,
+    .scale-row,
+    .button-row,
+    .summary-actions,
+    .scenario-meta,
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .choice,
+    .scale-option,
+    .data-chip,
+    .mini-tag {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .choice input,
+    .scale-option input,
+    .likert-option input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      pointer-events: none;
+    }
+
+    .option-card,
+    .scale-pill,
+    .likert-option {
+      padding: 15px 16px;
+      min-width: 130px;
+      transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+    }
+
+    .option-card:hover,
+    .scale-pill:hover,
+    .likert-option:hover,
+    .data-chip:hover {
+      transform: translateY(-1px);
+      border-color: rgba(18, 122, 114, 0.22);
+    }
+
+    .choice input:checked + .option-card,
+    .scale-option input:checked + .scale-pill,
+    .likert-option input:checked + span {
+      border-color: rgba(18, 122, 114, 0.32);
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+    }
+
+    .option-card strong,
+    .scale-pill strong {
+      display: block;
+      margin-bottom: 4px;
+      font-family: var(--font-head);
+    }
+
+    .task-card h3,
+    .summary-box h3,
+    .extra-card h3 {
+      margin-bottom: 10px;
+      font-size: 1.18rem;
+    }
+
+    .matrix-row {
+      padding: 16px 18px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .matrix-row .statement {
+      font-weight: 700;
+    }
+
+    .likert-group {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+    }
+
+    .likert-option span {
+      display: block;
+      border-radius: 14px;
+      border: 1px solid rgba(23, 49, 62, 0.08);
+      padding: 12px 10px;
+      height: 100%;
+      background: #fff;
+      text-align: center;
+      font-size: 0.92rem;
+      line-height: 1.3;
+    }
+
+    .likert-option {
+      position: relative;
+      display: block;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .button-row {
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 8px;
+    }
+
+    .button-row.tight {
+      justify-content: flex-start;
+    }
+
+    button {
+      appearance: none;
+      border: 0;
+      cursor: pointer;
+      font: inherit;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-primary,
+    .btn-secondary,
+    .btn-ghost {
+      border-radius: 16px;
+      padding: 13px 18px;
+      font-weight: 800;
+      min-height: 48px;
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-primary {
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+      box-shadow: 0 16px 34px rgba(18, 122, 114, 0.24);
+    }
+
+    .btn-secondary {
+      color: var(--text);
+      background: #fff;
+      border: 1px solid rgba(23, 49, 62, 0.12);
+    }
+
+    .btn-ghost {
+      color: var(--muted);
+      background: transparent;
+      border: 1px dashed rgba(23, 49, 62, 0.2);
+    }
+
+    .status-line {
+      font-size: 0.94rem;
+      color: var(--muted);
+    }
+
+    .scenario-counter {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(18, 122, 114, 0.1);
+      color: var(--accent-strong);
+      font-size: 0.92rem;
+      font-weight: 800;
+    }
+
+    .mini-tag {
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(23, 49, 62, 0.06);
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .data-chip {
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.98);
+    }
+
+    .extra-card {
+      padding: 16px 18px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(218, 241, 238, 0.78));
+    }
+
+    .summary-grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .summary-box strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 1.3rem;
+      font-family: var(--font-head);
+    }
+
+    .message {
+      padding: 14px 16px;
+      border-radius: 16px;
+      font-weight: 700;
+      background: rgba(181, 93, 43, 0.12);
+      color: var(--warning);
+      border: 1px solid rgba(181, 93, 43, 0.14);
+    }
+
+    .success {
+      background: rgba(18, 122, 114, 0.1);
+      color: var(--accent-strong);
+      border-color: rgba(18, 122, 114, 0.14);
+    }
+
+    code {
+      padding: 2px 6px;
+      border-radius: 8px;
+      background: rgba(23, 49, 62, 0.08);
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.95em;
+    }
+
+    .footer-note {
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+
+    @media (max-width: 980px) {
+      .app-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .page {
+        padding: 18px 12px 32px;
+      }
+
+      .panel,
+      .sidebar,
+      .hero {
+        padding: 20px;
+        border-radius: 24px;
+      }
+
+      .grid-two,
+      .grid-three,
+      .likert-group {
+        grid-template-columns: 1fr;
+      }
+
+      .button-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .button-row > * {
+        width: 100%;
+      }
+
+      .choice,
+      .scale-option,
+      .option-card,
+      .scale-pill {
+        width: 100%;
+      }
+
+      .option-card,
+      .scale-pill {
+        min-width: 0;
+      }
+    }
+
+    .info-block {
+      border: 1px solid rgba(23, 49, 62, 0.1);
+      background: var(--accent-soft, #f0f7f6);
+      border-radius: 18px;
+      padding: 18px 20px;
+      margin: 14px 0;
+    }
+
+    .info-block.stack > * + * {
+      margin-top: 10px;
+    }
+
+    .consent-list {
+      margin: 12px 0 4px;
+      padding-left: 20px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .consent-list li {
+      line-height: 1.45;
+    }
+
+    .form-field {
+      display: grid;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .form-field > label {
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .form-field select,
+    .form-field input {
+      padding: 11px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(23, 49, 62, 0.16);
+      background: #fff;
+      font: inherit;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      margin: 12px 0;
+    }
+
+    .attr-table {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 0.94rem;
+    }
+
+    .attr-table th,
+    .attr-table td {
+      border: 1px solid rgba(23, 49, 62, 0.12);
+      padding: 9px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .attr-table th {
+      background: var(--accent-soft, #f0f7f6);
+      font-family: var(--font-head);
+    }
+
+    .reveal-block {
+      border: 1px dashed rgba(18, 122, 114, 0.4);
+      border-radius: 16px;
+      padding: 12px 16px;
+      margin: 12px 0;
+      background: rgba(255, 255, 255, 0.6);
+    }
+
+    .reveal-tag {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--accent-strong, #0c6b63);
+      margin-bottom: 6px;
+    }
+
+    .scale-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      margin: 8px 0 14px;
+      font-size: 0.85rem;
+      color: rgba(23, 49, 62, 0.72);
+    }
+
+    .statement-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 26px;
+      height: 26px;
+      padding: 0 6px;
+      border-radius: 999px;
+      background: var(--accent-soft, #f0f7f6);
+      color: var(--accent-strong, #0c6b63);
+      font-weight: 700;
+      font-size: 0.85rem;
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <div class="hero-copy">
+        <h1>Ankieta badawcza</h1>
+      </div>
+      <div class="hero-actions">
+        <button class="btn-secondary" type="button" onclick="resetAllData()">Rozpocznij test od nowa</button>
+      </div>
+    </header>
+
+    <main id="app"></main>
+  </div>
+
+  <script>
+    (function (global) {
+      function shuffleArray(items) {
+        const copy = [...items];
+        for (let index = copy.length - 1; index > 0; index -= 1) {
+          const swapIndex = Math.floor(Math.random() * (index + 1));
+          [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
+        }
+        return copy;
+      }
+
+      const VISIBLE_COUNT = { low: 3, medium: 5, high: 8 };
+
+      const CATEGORY_LABEL = {
+        low: "Mało informacji",
+        medium: "Średnia ilość informacji",
+        high: "Dużo informacji"
+      };
+
+      function pickVersion() {
+        return Math.floor(Math.random() * 3) + 1;
+      }
+
+      function buildOptions(noun) {
+        return ["A", "B", "C"].map((letter) => ({
+          value: letter,
+          label: `${noun || "Opcja"} ${letter}`
+        }));
+      }
+
+      function buildBalancedLevels(count) {
+        const pool = ["low", "medium", "high"];
+        const levels = [];
+        for (let index = 0; index < count; index += 1) {
+          levels.push(pool[index % pool.length]);
+        }
+        return shuffleArray(levels);
+      }
+
+      function buildDecisionSet(tasks) {
+        const shuffledTasks = shuffleArray(tasks || []);
+        const levels = buildBalancedLevels(shuffledTasks.length);
+        return shuffledTasks.map((task, index) => {
+          const level = levels[index] || "low";
+          const count = VISIBLE_COUNT[level];
+          return {
+            id: task.id,
+            name: task.title,
+            title: task.title,
+            prompt: task.prompt,
+            optionNoun: task.optionNoun || "Opcja",
+            options: buildOptions(task.optionNoun),
+            level,
+            categoryLabel: CATEGORY_LABEL[level],
+            visibleCount: count,
+            displayOrder: index + 1,
+            attributes: (task.attributes || []).slice(0, count)
+          };
+        });
+      }
+
+      function getScenarioCounts(scenarios) {
+        return (scenarios || []).reduce((acc, scenario) => {
+          if (scenario && Object.prototype.hasOwnProperty.call(acc, scenario.level)) {
+            acc[scenario.level] += 1;
+          }
+          return acc;
+        }, { low: 0, medium: 0, high: 0 });
+      }
+
+      function validateDemographics(data) {
+        return Boolean(
+          data &&
+          data.gender &&
+          data.age &&
+          data.education &&
+          data.workStatus &&
+          data.position &&
+          data.decisionRole
+        );
+      }
+
+      function validateLogicAnswers(logicTasks, answers) {
+        return (logicTasks || []).every((task) => Boolean(answers && answers[task.id]));
+      }
+
+      function validateOpinionAnswers(opinionStatements, answers) {
+        return (opinionStatements || []).every((statement) => Boolean(answers && answers[statement.id]));
+      }
+
+      global.AnkietaLogic = {
+        shuffleArray,
+        pickVersion,
+        buildBalancedLevels,
+        buildOptions,
+        buildDecisionSet,
+        getScenarioCounts,
+        validateDemographics,
+        validateLogicAnswers,
+        validateOpinionAnswers
+      };
+    })(window);
+  </script>
+  <script>
+    const {
+      pickVersion,
+      buildDecisionSet,
+      getScenarioCounts: countScenarioLevels,
+      validateDemographics,
+      validateLogicAnswers,
+      validateOpinionAnswers
+    } = window.AnkietaLogic;
+
+    const STORAGE_KEY = "ankieta-zl2-draft";
+
+    const STEP_DEFS = [
+      { id: "intro", title: "Wstęp", desc: "Informacja i zgoda" },
+      { id: "demographics", title: "Metryczka", desc: "Pytania ogólne" },
+      { id: "opinions", title: "Kwestionariusz", desc: "21 stwierdzeń" },
+      { id: "logic", title: "Test", desc: "8 zadań" },
+      { id: "scenarios", title: "Scenariusze", desc: "9 decyzji" },
+      { id: "followups", title: "Zadania z dopytaniem", desc: "2 zadania" },
+      { id: "summary", title: "Zakończenie", desc: "Eksport" }
+    ];
+
+    const LIKERT = [
+      { value: "1", label: "Zdecydowanie się nie zgadzam" },
+      { value: "2", label: "Nie zgadzam się" },
+      { value: "3", label: "Raczej się nie zgadzam" },
+      { value: "4", label: "Ani się nie zgadzam, ani się zgadzam" },
+      { value: "5", label: "Raczej się zgadzam" },
+      { value: "6", label: "Zgadzam się" },
+      { value: "7", label: "Zdecydowanie się zgadzam" }
+    ];
+
+    const CONFIDENCE_LABELS = {
+      1: "Bardzo niepewny(-a)",
+      2: "Niepewny(-a)",
+      3: "Nie wiem",
+      4: "Pewny(-a)",
+      5: "Bardzo pewny(-a)"
+    };
+
+    const DIFFICULTY_LABELS = {
+      1: "Bardzo łatwo",
+      2: "Łatwo",
+      3: "Średnio",
+      4: "Trudno",
+      5: "Bardzo trudno"
+    };
+
+    const STUDY = {
+      title: "Badanie procesów decyzyjnych",
+      introParagraphs: [
+        "Drogi/a Uczestniku/Uczestniczko badania,",
+        "Zapraszam do udziału w badaniu dotyczącym sposobu podejmowania decyzji w różnych sytuacjach. Celem badania jest lepsze zrozumienie, w jaki sposób ludzie podejmują decyzje na podstawie dostępnych informacji. Zadanie jest częścią mojej pracy magisterskiej.",
+        "Badanie polega na wypełnieniu części metrykalnej, krótkiego kwestionariusza oraz wykonaniu kilku zadań polegających na podejmowaniu decyzji w różnych scenariuszach. W każdym zadaniu należy zapoznać się z przedstawionymi informacjami i wybrać jedną z dostępnych opcji.",
+        "Udział w badaniu zajmuje około 30 minut.",
+        "Udział w badaniu jest dobrowolny. <strong>W każdej chwili mogą Państwo zrezygnować z udziału w badaniu bez podawania przyczyny.</strong>",
+        "<strong>Badanie jest anonimowe</strong>, co oznacza, że nie są zbierane dane pozwalające na identyfikację uczestników. Zebrane dane: będą wykorzystywane wyłącznie do celów naukowych, zostaną opracowane w formie zbiorczej, nie będą przypisywane do konkretnych osób. Po wysłaniu ankiety nie ma możliwości wycofania danych, ponieważ nie można ich powiązać z konkretnym uczestnikiem.",
+        "Jeśli zdecydujesz się wziąć udział w tym badaniu, efekty tej procedury będą podobne do spędzenia 30 minut przed ekranem komputera.",
+        "Za udział w badaniu nie jest przewidziane wynagrodzenie.",
+        "W przypadku pytań dotyczących badania można skontaktować się z badaczem pod adresem e-mail: <strong>dszczupak@st.swps.edu.pl</strong>. Promotorką pracy jest dr Hanna Kucwaj, e-mail: <strong>hkucwaj@swps.edu.pl</strong>.",
+        "Dziękuję za udział.",
+        "<strong>Kliknięcie przycisku „Dalej” oznacza zapoznanie się z informacją o badaniu.</strong>"
+      ],
+      consentIntro: "Oświadczam, że:",
+      consentItems: [
+        "zapoznałem/am się z informacją dotyczącą badania,",
+        "rozumiem cel badania oraz przebieg mojego udziału w badaniu,",
+        "wiem, że udział w badaniu jest dobrowolny,",
+        "wiem, że mogę w dowolnym momencie zrezygnować z udziału w badaniu bez podawania przyczyny,",
+        "wyrażam zgodę na anonimowe wykorzystanie moich odpowiedzi do celów naukowych."
+      ],
+      consentLabel: "Wyrażam zgodę na udział w badaniu.",
+      demographicsTitle: "Pytania ogólne",
+      demographicsFields: [
+        {
+          id: "gender",
+          label: "Podaj swoją płeć",
+          type: "select",
+          options: ["kobieta", "mężczyzna", "inna", "nie chcę podawać"]
+        },
+        {
+          id: "age",
+          label: "Podaj swój wiek",
+          type: "number"
+        },
+        {
+          id: "education",
+          label: "Podaj swoje wykształcenie",
+          type: "select",
+          options: ["wyższe", "średnie", "podstawowe"]
+        },
+        {
+          id: "workStatus",
+          label: "Określ swoją sytuację zawodową",
+          type: "select",
+          options: ["pracuję", "pracuję i studiuję", "studiuję", "nie pracuję"]
+        },
+        {
+          id: "position",
+          label: "Wskaż poziom Twojego stanowiska zawodowego",
+          type: "select",
+          options: [
+            "pracownik produkcyjny",
+            "specjalista",
+            "kierownik średniego szczebla (manager)",
+            "kadra zarządzająca wyższego szczebla",
+            "dyrektor",
+            "właściciel firmy",
+            "inne",
+            "nie pracuję"
+          ]
+        },
+        {
+          id: "decisionRole",
+          label: "Czy Twoja praca wiąże się z podejmowaniem decyzji",
+          type: "select",
+          options: ["tak", "nie", "nie pracuję"]
+        }
+      ],
+      opinionIntro: [
+        "W tej części badania znajdziesz serię stwierdzeń dotyczących Twoich preferencji w zakresie opierania swoich przekonań i decyzji na dowodach lub intuicji.",
+        "Proszę o ocenę w jakim stopniu zgadzasz się z każdym przedstawionym stwierdzeniem. <strong>Nie ma odpowiedzi poprawnych ani błędnych.</strong> Interesuje mnie Twoja osobista opinia i sposób podejmowania decyzji.",
+        "Przy każdym stwierdzeniu należy zaznaczyć odpowiedź na siedmiostopniowej skali (od „<strong>zdecydowanie się nie zgadzam</strong>” do „<strong>zdecydowanie się zgadzam</strong>”). <strong>Odpowiedź na każde stwierdzenie jest obowiązkowa.</strong>",
+        "Proszę o udzielanie odpowiedzi zgodnie z własnymi odczuciami i doświadczeniami. Jeśli któreś ze stwierdzeń wydaje się trudne do oceny, proszę wybrać odpowiedź najbardziej zbliżoną do Twojej opinii."
+      ],
+      opinionStatements: [
+        { id: "op_1", text: "Ufam swojej intuicji, kiedy podpowiada mi co jest prawdą, a co nie." },
+        { id: "op_2", text: "Ufam swoim początkowym odczuciom na temat faktów." },
+        { id: "op_3", text: "Moje pierwsze wrażenia są prawie zawsze słuszne." },
+        { id: "op_4", text: "Zazwyczaj czuję, czy dane stwierdzenie jest prawdziwe lub fałszywe, nawet jeśli nie potrafię wyjaśnić, skąd to wiem." },
+        { id: "op_5", text: "Dowody są ważniejsze niż to, czy coś wydaje mi się prawdziwe." },
+        { id: "op_6", text: "Przeczucie musi być potwierdzone danymi." },
+        { id: "op_7", text: "Ufam faktom, a nie swoim przeczuciom, kiedy określam, co jest prawdą." },
+        { id: "op_8", text: "Muszę być w stanie uzasadnić swoje przekonania dowodami." },
+        { id: "op_9", text: "Fakty są dyktowane przez tych, którzy sprawują władzę." },
+        { id: "op_10", text: "To, co uchodzi za prawdę, jest określane przez władzę." },
+        { id: "op_11", text: "Wnioski naukowe są kształtowane przez politykę." },
+        { id: "op_12", text: "„Fakty” zależą od kontekstu politycznego." },
+        { id: "op_13", text: "Uważam, że na świecie dzieje się wiele bardzo ważnych rzeczy, o których społeczeństwo nigdy nie jest informowane." },
+        { id: "op_14", text: "Uważam, że politycy zazwyczaj nie mówią nam o prawdziwych motywach swoich decyzji." },
+        { id: "op_15", text: "Uważam, że agencje rządowe ściśle monitorują wszystkich obywateli." },
+        { id: "op_16", text: "Uważam, że wydarzenia, które pozornie wydają się ze sobą niepowiązane, są często wynikiem tajnych działań." },
+        { id: "op_17", text: "Uważam, że istnieją tajne organizacje, które w znacznym stopniu wpływają na decyzje polityczne." },
+        { id: "op_18", text: "Wierzę tylko tym ludziom, którzy upewniają się, że są dobrze poinformowani, zanim wyrażą swoją opinię na dany temat." },
+        { id: "op_19", text: "Wierzę tylko w stwierdzenia, które są oparte na dowodach empirycznych." },
+        { id: "op_20", text: "Ludzie zawsze powinni trzymać się faktów i odrzucać osobiste opinie." },
+        { id: "op_21", text: "Przed wygłoszeniem jakiekolwiek twierdzenia ludzie muszą się najpierw upewniać, że zgromadzili wszystkie poprawne informacje." }
+      ],
+      logicIntro: [
+        "Przed Tobą krótki test składający się z 8 zadań. Sprawdzają one różne aspekty przetwarzania informacji: myślenie logiczne, matematyczne, językowe.",
+        "Zasada jednej odpowiedzi: w każdym zadaniu poprawna jest tylko jedna odpowiedź. Wybierz opcję (A, B, C lub D), która Twoim zdaniem jest najbardziej logiczna.",
+        "Samodzielność: proszę o samodzielne rozwiązywanie zadań. Nie korzystaj w trakcie testu z kalkulatora, wyszukiwarki internetowej ani pomocy innych osób.",
+        "Intuicja: jeśli nie znasz odpowiedzi na któreś pytanie, zaznacz opcję, która wydaje Ci się najbardziej prawdopodobna – nie zostawiaj pustych pól."
+      ],
+      logicTasks: [
+        {
+          id: "logic_1",
+          title: "Zadanie 1",
+          prompt: "Która liczba powinna znaleźć się w miejscu znaku zapytania? 2, 3, 5, 8, 13, 21, ?",
+          options: [
+            { value: "A", label: "29" },
+            { value: "B", label: "34" },
+            { value: "C", label: "31" },
+            { value: "D", label: "42" }
+          ]
+        },
+        {
+          id: "logic_2",
+          title: "Zadanie 2",
+          prompt: "Wskaż brakującą liczbę w sekwencji: 4, 9, 16, 25, 36, ?",
+          options: [
+            { value: "A", label: "45" },
+            { value: "B", label: "47" },
+            { value: "C", label: "49" },
+            { value: "D", label: "54" }
+          ]
+        },
+        {
+          id: "logic_3",
+          title: "Zadanie 3",
+          prompt: "Jeśli 5 kotów łapie 5 myszy w 5 minut, to ile czasu zajmie 100 kotom złapanie 100 myszy?",
+          options: [
+            { value: "A", label: "100 minut" },
+            { value: "B", label: "50 minut" },
+            { value: "C", label: "20 minut" },
+            { value: "D", label: "5 minut" }
+          ]
+        },
+        {
+          id: "logic_4",
+          title: "Zadanie 4",
+          prompt: "Które słowo NIE PASUJE do pozostałych?",
+          options: [
+            { value: "A", label: "Słuchawki" },
+            { value: "B", label: "Okulary" },
+            { value: "C", label: "Rękawiczki" },
+            { value: "D", label: "Spodnie" }
+          ]
+        },
+        {
+          id: "logic_5",
+          title: "Zadanie 5",
+          prompt: "Dokończ analogię pojęciową: SREBRO ma się do METALE tak, jak TLEN ma się do:",
+          options: [
+            { value: "A", label: "Powietrze" },
+            { value: "B", label: "Gazy" },
+            { value: "C", label: "Oddychanie" },
+            { value: "D", label: "Pierwiastki" }
+          ]
+        },
+        {
+          id: "logic_6",
+          title: "Zadanie 6",
+          prompt: "Którego ze słów NIE MOŻNA ułożyć, używając wyłącznie liter ze słowa „LISTOPADOWY”?",
+          options: [
+            { value: "A", label: "Lodowaty" },
+            { value: "B", label: "Spoiwo" },
+            { value: "C", label: "Podlot" },
+            { value: "D", label: "Spust" }
+          ]
+        },
+        {
+          id: "logic_7",
+          title: "Zadanie 7",
+          prompt: "W szufladzie leżą wymieszane luźne skarpetki: 10 czarnych i 10 białych. Jest ciemno i nie widzisz kolorów. Jaka jest minimalna liczba skarpetek, które musisz wyciągnąć, aby mieć absolutną pewność, że masz przynajmniej jedną pasującą parę (dwie skarpetki tego samego koloru)?",
+          options: [
+            { value: "A", label: "3" },
+            { value: "B", label: "11" },
+            { value: "C", label: "2" },
+            { value: "D", label: "21" }
+          ]
+        },
+        {
+          id: "logic_8",
+          title: "Zadanie 8",
+          prompt: "Ojciec ma obecnie 40 lat, a jego syn 10. Za ile lat ojciec będzie dokładnie dwa razy starszy od swojego syna?",
+          options: [
+            { value: "A", label: "Za 10 lat" },
+            { value: "B", label: "Za 15 lat" },
+            { value: "C", label: "Za 20 lat" },
+            { value: "D", label: "Za 30 lat" }
+          ]
+        }
+      ],
+      scenarioIntro: [
+        "W kolejnej części badania zostaną Ci przedstawione różne krótkie scenariusze opisujące sytuacje wymagające podjęcia decyzji. Każdy scenariusz zawiera zestaw informacji dotyczących kilku możliwych opcji.",
+        "Proszę o zapoznanie się z informacjami dotyczącymi poszczególnych opcji, a następnie wybranie tej, która według Ciebie jest najlepszym rozwiązaniem w danej sytuacji. Nie ma odpowiedzi zgodnych lub niezgodnych z oczekiwaniami badacza. Interesuje nas sposób, w jaki uczestnicy oceniają dostępne informacje i podejmują decyzje.",
+        "W niektórych zadaniach liczba dostępnych informacji może się różnić. Proszę podejmować decyzje na podstawie informacji przedstawionych w danym zadaniu.",
+        "Nie ma ograniczenia czasowego na udzielenie odpowiedzi, jednak proszę o podejmowanie decyzji w sposób możliwie naturalny i spontaniczny."
+      ],
+      decisionTasks: [
+        {
+          id: "dec_1",
+          title: "Produkt inwestycyjny",
+          optionNoun: "Opcja",
+          prompt: "Inwestor dysponuje kwotą 100 000 zł i chce ulokować środki w jednym z trzech produktów inwestycyjnych. Jego celem jest osiągnięcie możliwie najwyższego oczekiwanego zysku przy uwzględnieniu ryzyka inwestycyjnego. Który produkt wybrał(a)byś?",
+          attributes: [
+            { name: "oprocentowanie", a: "7%", b: "5,50%", c: "6%" },
+            { name: "ryzyko utraty części kapitału", a: "30%", b: "0%", c: "5%" },
+            { name: "dostęp do gotówki", a: "natychmiast", b: "po 12 miesiącach", c: "po 3 miesiącach" },
+            { name: "kapitał gwarantowany", a: "50%", b: "100%", c: "100%" },
+            { name: "opłata za założenie produktu", a: "0 zł", b: "50 zł", c: "0 zł" },
+            { name: "bonus za nowe środki", a: "nie", b: "tak", c: "tak" },
+            { name: "ranking ekspercki (1-10)", a: "9", b: "4", c: "7" },
+            { name: "liczba aktywnych klientów", a: "15 tysięcy", b: "220 tysięcy", c: "85 tysięcy" }
+          ]
+        },
+        {
+          id: "dec_2",
+          title: "Lokalizacja osiedla",
+          optionNoun: "Opcja",
+          prompt: "Deweloper planuje budowę nowego osiedla mieszkaniowego. Jego celem jest osiągnięcie możliwie najwyższej rentowności inwestycji przy akceptowalnym poziomie ryzyka. Którą lokalizację powinien wybrać?",
+          attributes: [
+            { name: "cena sprzedaży za m2", a: "18 000 zł/m2", b: "11 000 zł/m2", c: "14 000 zł/m2" },
+            { name: "popyt (liczba mieszkań możliwych do sprzedaży rocznie)", a: "180", b: "120", c: "170" },
+            { name: "szacowany koszt budowy", a: "15 500", b: "8 500", c: "11 000" },
+            { name: "ryzyko prawne", a: "niskie", b: "średnie", c: "niskie" },
+            { name: "dostępność infrastruktury", a: "bardzo dobra", b: "dobra", c: "dobra" },
+            { name: "prognozowany wzrost cen mieszkań w ciągu 3 lat", a: "6%", b: "18%", c: "9%" },
+            { name: "liczba konkurencyjnych inwestycji w promieniu 5 km", a: "12", b: "3", c: "6" },
+            { name: "ocena lokalizacji w rankingu branżowym (1-10)", a: "9", b: "5", c: "7" }
+          ]
+        },
+        {
+          id: "dec_3",
+          title: "Mieszkanie na wynajem",
+          optionNoun: "Opcja",
+          prompt: "Inwestor indywidualny chce kupić mieszkanie, które będzie generować stabilny dochód z najmu przez najbliższe lata. Którą nieruchomość powinien wybrać?",
+          attributes: [
+            { name: "rentowność najmu", a: "5,6%", b: "6,0%", c: "5,5%" },
+            { name: "stan techniczny", a: "do niedużego remontu", b: "odświeżone", c: "nowe" },
+            { name: "ocena atrakcyjności lokalizacji (1-10)", a: "10", b: "8", c: "6" },
+            { name: "cena za m2 (w PLN)", a: "15 500 zł/m2", b: "11 500 zł/m2", c: "13 000 zł/m2" },
+            { name: "miesięczne opłaty czynszowe", a: "650 zł", b: "450 zł", c: "650 zł" },
+            { name: "średni stan pustostanu rocznie", a: "0,5 miesiąca", b: "0,7 miesiąca", c: "1,2 miesiąca" },
+            { name: "wzrost wartości nieruchomości w ostatnich 5 latach", a: "42%", b: "18%", c: "25%" },
+            { name: "liczba nowych inwestycji mieszkaniowych w promieniu 3 km", a: "15", b: "7", c: "10" }
+          ]
+        },
+        {
+          id: "dec_4",
+          title: "Fundusz emerytalny",
+          optionNoun: "Opcja",
+          prompt: "Klient bankowości prywatnej wybiera fundusz do portfela emerytalnego. Zaproponuj mu jeden z poniższych wiedząc, że zależy mu na solidnym, powtarzalnym zysku.",
+          attributes: [
+            { name: "średni zysk", a: "11,0%", b: "8,4%", c: "4,1%" },
+            { name: "opłata za zarządzanie", a: "2,0%", b: "0,8%", c: "0,7%" },
+            { name: "liczba lat z dodatnim zyskiem (ostatnie 10 lat)", a: "6", b: "10", c: "10" },
+            { name: "poziom ryzyka (1-7)", a: "6", b: "3", c: "2" },
+            { name: "największa strata w jednym roku", a: "-35%", b: "-12%", c: "-8%" },
+            { name: "wartość aktywów, którymi zarządza fundusz", a: "2 mld zł", b: "8 mld zł", c: "0,5 mld zł" },
+            { name: "staż osoby zarządzającej funduszem", a: "3 lata", b: "12 lat", c: "5 lat" },
+            { name: "ocena ekspercka (1-5)", a: "3", b: "3,5", c: "4" }
+          ]
+        },
+        {
+          id: "dec_5",
+          title: "Kandydat do pracy",
+          optionNoun: "Kandydat",
+          prompt: "Manager poszukuje pracownika do działu raportowania wyników finansowych spółki. Stanowisko wymaga analizy danych finansowych, przygotowywania raportów dla zarządu oraz współpracy z zespołami mającymi siedzibę w Wielkiej Brytanii. Wybierz jednego z poniższych kandydatów na to stanowisko.",
+          attributes: [
+            { name: "wynik testu kompetencji (1-100)", a: "94", b: "82", c: "86" },
+            { name: "doświadczenie zawodowe (lata)", a: "3", b: "10", c: "5" },
+            { name: "znajomość języka angielskiego (1-5)", a: "4", b: "5", c: "5" },
+            { name: "ocena współpracy zawodowej", a: "4", b: "4", c: "5" },
+            { name: "zadania wykonane w terminie", a: "97%", b: "94%", c: "95%" },
+            { name: "liczba ukończonych szkoleń w ciągu ostatnich 2 lat", a: "9", b: "2", c: "5" },
+            { name: "średnia ocena przełożonych (1-5)", a: "4,7", b: "4,1", c: "4,5" },
+            { name: "zainteresowania", a: "analiza danych, szachy", b: "bieganie", c: "podróże" }
+          ]
+        },
+        {
+          id: "dec_6",
+          title: "Lokalizacja sklepu",
+          optionNoun: "Opcja",
+          prompt: "Jesteś właścicielem sieci sklepów. Planujesz otwarcie kolejnego punktu sprzedaży. Dział analiz przygotował zestawienie trzech potencjalnych lokalizacji. Twoim celem jest osiągnięcie możliwie szybkiego zwrotu z inwestycji. Którą lokalizację wybierasz?",
+          attributes: [
+            { name: "koszty czynszu miesięcznego", a: "100 000", b: "50 000", c: "80 000" },
+            { name: "koszt przygotowania sklepu", a: "500 000", b: "350 000", c: "400 000" },
+            { name: "prognozowany miesięczny przychód", a: "260 000", b: "140 000", c: "220 000" },
+            { name: "średnia liczba klientów miesięcznie", a: "30 000", b: "18 000", c: "28 000" },
+            { name: "lokalizacja centrum handlowego (1-10)", a: "6", b: "5", c: "9" },
+            { name: "długość trwania umowy najmu", a: "3 lata", b: "5 lat", c: "3 lata" },
+            { name: "liczba obserwujących centrum handlowe w mediach społecznościowych", a: "5 000", b: "10 000", c: "5 000" },
+            { name: "ocena estetyki centrum (1-10)", a: "7", b: "7", c: "10" }
+          ]
+        },
+        {
+          id: "dec_7",
+          title: "Produkt oszczędnościowy",
+          optionNoun: "Opcja",
+          prompt: "Jesteś doradcą finansowym. Twój klient chce ulokować oszczędności na co najmniej 3 lata. Najważniejsze jest dla niego bezpieczeństwo środków, ale chciałby również uzyskać rozsądny zysk. Który produkt oszczędnościowy powinieneś mu zarekomendować?",
+          attributes: [
+            { name: "oprocentowanie", a: "3,4%", b: "4,5%", c: "4,0%" },
+            { name: "stabilność instytucji (1-10)", a: "10", b: "6", c: "8" },
+            { name: "horyzont inwestycji", a: "3 lata", b: "3 lata", c: "3 lata" },
+            { name: "prawdopodobieństwo straty kapitału", a: "0%", b: "8%", c: "3%" },
+            { name: "możliwość wcześniejszej wypłaty", a: "tak", b: "nie", c: "tak" },
+            { name: "średnia ocena klientów (1-5)", a: "4,6", b: "4,4", c: "4,5" },
+            { name: "liczba oddziałów w kraju", a: "420", b: "280", c: "250" },
+            { name: "liczba aktywnych użytkowników aplikacji mobilnej", a: "2,1 mln", b: "1,8 mln", c: "2,0 mln" }
+          ]
+        },
+        {
+          id: "dec_8",
+          title: "Siłownia",
+          optionNoun: "Opcja",
+          prompt: "Szukasz siłowni oferującej zajęcia grupowe. Zależy Ci przede wszystkim na możliwości uczestniczenia w porannych zajęciach w komfortowych warunkach. Komfort rozumiesz jako niewielką liczbę uczestników, dogodną lokalizację oraz rozsądną cenę. Którą siłownię wybierasz?",
+          attributes: [
+            { name: "średnia liczba osób na porannych zajęciach", a: "14", b: "10", c: "8" },
+            { name: "ocena uczestników (1-5)", a: "4,3", b: "4,5", c: "4,4" },
+            { name: "liczba porannych zajęć tygodniowo", a: "2", b: "5", c: "3" },
+            { name: "odległość od domu", a: "3 km", b: "3 km", c: "4 km" },
+            { name: "prawdopodobieństwo zapisania się na zajęcia", a: "70%", b: "95%", c: "75%" },
+            { name: "możliwość udziału w lekcji próbnej", a: "nie", b: "tak", c: "tak" },
+            { name: "cena miesięcznego karnetu", a: "180 zł", b: "220 zł", c: "200 zł" },
+            { name: "aplikacja mobilna do zapisów", a: "tak", b: "tak", c: "tak" }
+          ]
+        },
+        {
+          id: "dec_9",
+          title: "Dostawca komponentów",
+          optionNoun: "Opcja",
+          prompt: "Jesteś właścicielem firmy produkcyjnej. Musisz wybrać jednego z trzech dostawców komponentów. Najważniejsze są: terminowość dostaw, stabilność współpracy oraz całkowity koszt zakupu.",
+          attributes: [
+            { name: "cena za jednostkę", a: "48 zł", b: "45 zł", c: "42 zł" },
+            { name: "terminowość dostaw", a: "98%", b: "95%", c: "85%" },
+            { name: "odsetek reklamacji", a: "4%", b: "2%", c: "1%" },
+            { name: "średni czas realizacji zamówienia", a: "3 dni", b: "4 dni", c: "7 dni" },
+            { name: "dostępność produktu (%)", a: "92%", b: "97%", c: "85%" },
+            { name: "liczba klientów obsługiwanych przez dostawcę", a: "150", b: "250", c: "500" },
+            { name: "ocena strony internetowej (1-5)", a: "4,1", b: "4,3", c: "4,8" },
+            { name: "liczba obserwujących w mediach społecznościowych", a: "4 tys", b: "7 tys", c: "18 tys" }
+          ]
+        }
+      ],
+      followupIntro: [
+        "W tej części badania zostaną Ci przedstawione dwa zadania opisujące różne sytuacje wymagające podjęcia decyzji. Będziesz mógł wybrać liczbę dostępnych informacji, która jest Ci niezbędna do podjęcia decyzji. Proszę podejmować decyzje na podstawie informacji przedstawionych w danym zadaniu.",
+        "Nie ma ograniczenia czasowego na udzielenie odpowiedzi, jednak proszę o podejmowanie decyzji w sposób możliwie naturalny i spontaniczny."
+      ],
+      followUpTasks: [
+        {
+          id: "follow_1",
+          title: "Zadanie 1 – wprowadzenie produktu",
+          optionNoun: "Produkt",
+          prompt: "Firma, w której pracujesz planuje wprowadzić jeden z trzech produktów na rynek. Twoim zadaniem jest wybór produktu, który ma największy potencjał sprzedażowy. Możesz podjąć decyzję na bazie dostępnych informacji lub poprosić o dodatkowe dane.",
+          infoLevels: [
+            [
+              { name: "prognozowany popyt", a: "18 000", b: "15 000", c: "16 000" },
+              { name: "marża %", a: "12%", b: "20%", c: "16%" }
+            ],
+            [
+              { name: "ryzyko niepowodzenia (%)", a: "10%", b: "25%", c: "15%" },
+              { name: "konkurencja na rynku", a: "średnia", b: "wysoka", c: "średnia" }
+            ],
+            [
+              { name: "atrakcyjność opakowania", a: "średnia", b: "wysoka", c: "wysoka" },
+              { name: "rozpoznawalność marki", a: "średnia", b: "wysoka", c: "średnia" },
+              { name: "liczba wariantów produktu", a: "3", b: "5", c: "4" }
+            ]
+          ]
+        },
+        {
+          id: "follow_2",
+          title: "Zadanie 2 – projekt inwestycyjny",
+          optionNoun: "Projekt",
+          prompt: "Masz możliwość zainwestowania środków w jeden z trzech projektów. Twoim celem jest wybór projektu, który przyniesie największy oczekiwany zysk. Możesz podjąć decyzję na podstawie dostępnych informacji lub poprosić o kolejne dane.",
+          infoLevels: [
+            [
+              { name: "potencjalny zysk (%)", a: "6%", b: "11%", c: "8%" },
+              { name: "czas inwestycji", a: "2 lata", b: "2 lata", c: "2 lata" }
+            ],
+            [
+              { name: "ryzyko niepowodzenia (%)", a: "5%", b: "45%", c: "15%" },
+              { name: "zmienność wyników", a: "niska", b: "wysoka", c: "średnia" },
+              { name: "stabilność branży", a: "wysoka", b: "niska", c: "średnia" }
+            ],
+            [
+              { name: "ryzyko niepowodzenia (%)", a: "5%", b: "45%", c: "15%" },
+              { name: "zmienność wyników", a: "niska", b: "wysoka", c: "średnia" },
+              { name: "stabilność branży", a: "wysoka", b: "niska", c: "średnia" }
+            ]
+          ]
+        }
+      ],
+      outro: "Dziękuję bardzo za poświęcony czas na wypełnienie tego badania."
+    };
+
+    let state = loadState() || createInitialState();
+    renderApp();
+
+    function createInitialState() {
+      const startedAt = new Date().toISOString();
+      return {
+        studyId: createSessionId(),
+        participantCode: "",
+        currentStep: 0,
+        message: "",
+        startedAt,
+        finishedAt: "",
+        consent: false,
+        demographics: {
+          gender: "",
+          age: "",
+          education: "",
+          workStatus: "",
+          position: "",
+          decisionRole: ""
+        },
+        sectionTimings: {},
+        logicAnswers: {},
+        opinions: {},
+        scenarios: buildDecisionSet(STUDY.decisionTasks),
+        scenarioResponses: {},
+        currentScenarioIndex: 0,
+        followups: STUDY.followUpTasks.map((task) => ({
+          taskId: task.id,
+          reveals: 0,
+          answer: "",
+          confidence: "",
+          startedAt: "",
+          completedAt: "",
+          durationSeconds: ""
+        })),
+        currentFollowupIndex: 0
+      };
+    }
+
+    function createSessionId() {
+      const prefix = "BAD";
+      if (window.crypto && typeof window.crypto.randomUUID === "function") {
+        return prefix + "-" + window.crypto.randomUUID().slice(0, 8).toUpperCase();
+      }
+      return prefix + "-" + Math.random().toString(36).slice(2, 10).toUpperCase();
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (error) {
+        console.warn("Nie udało się zapisać szkicu.", error);
+      }
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) {
+          return null;
+        }
+        const parsed = JSON.parse(raw);
+        if (!parsed || !parsed.studyId || !Array.isArray(parsed.scenarios)) {
+          return null;
+        }
+        return parsed;
+      } catch (error) {
+        console.warn("Nie udało się wczytać szkicu.", error);
+        return null;
+      }
+    }
+
+    function resetState() {
+      state = createInitialState();
+      clearMessage();
+      saveState();
+      renderApp();
+    }
+
+    function clearDraftStorage() {
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+      } catch (error) {
+        console.warn("Nie udało się wyczyścić pamięci przeglądarki.", error);
+      }
+    }
+
+    function setMessage(message, type) {
+      state.message = message ? { text: message, type: type || "warning" } : "";
+      renderApp();
+    }
+
+    function clearMessage() {
+      state.message = "";
+    }
+
+    function ensureSectionStarted(key) {
+      if (!state.sectionTimings[key]) {
+        state.sectionTimings[key] = { startedAt: new Date().toISOString() };
+        saveState();
+      }
+      return state.sectionTimings[key];
+    }
+
+    function completeSection(key) {
+      const slot = ensureSectionStarted(key);
+      slot.completedAt = new Date().toISOString();
+      slot.durationSeconds = diffSeconds(slot.startedAt, slot.completedAt);
+      saveState();
+    }
+
+    function diffSeconds(start, end) {
+      if (!start || !end) {
+        return "";
+      }
+      const diff = Math.max(0, Math.round((new Date(end) - new Date(start)) / 1000));
+      return diff;
+    }
+
+    function renderApp() {
+      ensureStepStarted();
+      const app = document.getElementById("app");
+      app.innerHTML = `
+        <div class="app-shell">
+          <aside class="sidebar">
+            <div>
+              <div class="eyebrow">Postęp badania</div>
+              <h2>${escapeHtml(STUDY.title)}</h2>
+            </div>
+            <div class="step-list">
+              ${STEP_DEFS.map((step, index) => renderStepItem(step, index)).join("")}
+            </div>
+            <div class="sidebar-meta">
+              <strong>ID sesji: ${escapeHtml(state.studyId)}</strong>
+              <div class="status-line">Kod uczestnika: ${escapeHtml(state.participantCode || "nie podano")}</div>
+              <div class="status-line">Liczba zapisanych odpowiedzi: ${countAnsweredItems()}</div>
+              <div class="status-line">Szkic zapisuje się lokalnie w tej przeglądarce.</div>
+            </div>
+          </aside>
+          <section class="panel">
+            ${state.message ? `<div class="message ${state.message.type === "success" ? "success" : ""}">${escapeHtml(state.message.text)}</div>` : ""}
+            ${renderCurrentStep()}
+          </section>
+        </div>
+      `;
+    }
+
+    function renderStepItem(step, index) {
+      const done = state.currentStep > index;
+      const active = state.currentStep === index;
+      return `
+        <div class="step-item ${done ? "done" : ""} ${active ? "active" : ""}">
+          <div class="step-num">${done ? "✓" : index + 1}</div>
+          <div>
+            <div class="step-title">${escapeHtml(step.title)}</div>
+            <div class="step-desc">${escapeHtml(step.desc)}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCurrentStep() {
+      switch (STEP_DEFS[state.currentStep].id) {
+        case "intro":
+          return renderIntro();
+        case "demographics":
+          return renderDemographics();
+        case "logic":
+          return renderLogic();
+        case "opinions":
+          return renderOpinions();
+        case "scenarios":
+          return renderScenarios();
+        case "followups":
+          return renderFollowups();
+        case "summary":
+          return renderSummary();
+        default:
+          return "<p>Nieznany krok.</p>";
+      }
+    }
+
+    function renderIntro() {
+      ensureSectionStarted("intro");
+      return `
+        <div class="section-head">
+          <div class="eyebrow">Krok 1 z 7</div>
+          <h2>Informacja o badaniu i zgoda</h2>
+        </div>
+
+        <div class="info-block stack">
+          ${STUDY.introParagraphs.map((paragraph) => `<p>${paragraph}</p>`).join("")}
+        </div>
+
+        <form onsubmit="submitIntro(event)" class="stack">
+          <div class="grid-two">
+            <div>
+              <label for="participantCode">Kod uczestnika (opcjonalnie)</label>
+              <input id="participantCode" name="participantCode" type="text" maxlength="40" value="${escapeHtmlAttr(state.participantCode)}" placeholder="np. P-001 lub pozostaw puste">
+            </div>
+            <div>
+              <label for="startedAtInfo">Start sesji</label>
+              <input id="startedAtInfo" type="text" value="${escapeHtmlAttr(formatDateTime(state.startedAt))}" disabled>
+            </div>
+          </div>
+
+          <div class="info-block stack">
+            <strong>${escapeHtml(STUDY.consentIntro)}</strong>
+            <ul class="consent-list">
+              ${STUDY.consentItems.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
+            </ul>
+          </div>
+
+          <div class="check-row">
+            <input id="consent" name="consent" type="checkbox" ${state.consent ? "checked" : ""}>
+            <label for="consent" style="margin:0;">
+              ${escapeHtml(STUDY.consentLabel)}
+            </label>
+          </div>
+
+          <div class="button-row">
+            <button class="btn-ghost" type="button" onclick="resetAllData()">Rozpocznij od nowa</button>
+            <button class="btn-primary" type="submit">Dalej</button>
+          </div>
+        </form>
+      `;
+    }
+
+    function renderDemographics() {
+      ensureSectionStarted("demographics");
+      return `
+        <div class="section-head">
+          <div class="eyebrow">Krok 2 z 7</div>
+          <h2>${escapeHtml(STUDY.demographicsTitle)}</h2>
+        </div>
+
+        <form onsubmit="submitDemographics(event)" class="stack">
+          ${STUDY.demographicsFields.map((field) => renderDemographicField(field)).join("")}
+
+          <div class="button-row">
+            <button class="btn-secondary" type="button" onclick="resetAllData()">Rozpocznij od nowa</button>
+            <button class="btn-primary" type="submit">Przejdź do kwestionariusza</button>
+          </div>
+        </form>
+      `;
+    }
+
+    function renderDemographicField(field) {
+      const current = state.demographics[field.id] || "";
+      if (field.type === "number") {
+        return `
+          <div class="form-field">
+            <label for="${escapeHtmlAttr(field.id)}">${escapeHtml(field.label)}</label>
+            <input id="${escapeHtmlAttr(field.id)}" name="${escapeHtmlAttr(field.id)}" type="number" min="0" max="120" value="${escapeHtmlAttr(current)}" placeholder="np. 34">
+          </div>
+        `;
+      }
+      return `
+        <div class="form-field">
+          <label for="${escapeHtmlAttr(field.id)}">${escapeHtml(field.label)}</label>
+          <select id="${escapeHtmlAttr(field.id)}" name="${escapeHtmlAttr(field.id)}">
+            <option value="">Wybierz</option>
+            ${field.options.map((option) => `<option value="${escapeHtmlAttr(option)}" ${current === option ? "selected" : ""}>${escapeHtml(option)}</option>`).join("")}
+          </select>
+        </div>
+      `;
+    }
+
+    function renderLogic() {
+      ensureSectionStarted("logic");
+      return `
+        <div class="section-head">
+          <div class="eyebrow">Krok 4 z 7</div>
+          <h2>Test</h2>
+        </div>
+
+        <div class="info-block stack">
+          ${STUDY.logicIntro.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("")}
+        </div>
+
+        <form onsubmit="submitLogic(event)" class="stack">
+          ${STUDY.logicTasks.map((task) => `
+            <div class="task-card">
+              <h3>${escapeHtml(task.title)}</h3>
+              <p style="margin-bottom: 14px;">${escapeHtml(task.prompt)}</p>
+              <div class="choices">
+                ${task.options.map((option) => `
+                  <label class="choice">
+                    <input type="radio" name="${escapeHtmlAttr(task.id)}" value="${escapeHtmlAttr(option.value)}" ${state.logicAnswers[task.id] === option.value ? "checked" : ""}>
+                    <span class="option-card">
+                      <strong>${escapeHtml(option.value)}</strong>
+                      <span>${escapeHtml(option.label)}</span>
+                    </span>
+                  </label>
+                `).join("")}
+              </div>
+            </div>
+          `).join("")}
+
+          <div class="button-row">
+            <button class="btn-secondary" type="button" onclick="resetLogicAnswers()">Wyczyść odpowiedzi tego kroku</button>
+            <button class="btn-primary" type="submit">Przejdź do scenariuszy</button>
+          </div>
+        </form>
+      `;
+    }
+
+    function renderOpinions() {
+      ensureSectionStarted("opinions");
+      return `
+        <div class="section-head">
+          <div class="eyebrow">Krok 3 z 7</div>
+          <h2>Kwestionariusz</h2>
+        </div>
+
+        <div class="info-block stack">
+          ${STUDY.opinionIntro.map((paragraph) => `<p>${paragraph}</p>`).join("")}
+        </div>
+
+        <form onsubmit="submitOpinions(event)" class="stack">
+          ${STUDY.opinionStatements.map((statement, index) => `
+            <div class="matrix-row">
+              <div class="statement"><span class="statement-num">${index + 1}.</span> ${escapeHtml(statement.text)}</div>
+              <div class="likert-group">
+                ${LIKERT.map((item) => `
+                  <label class="likert-option" title="${escapeHtmlAttr(item.label)}">
+                    <input type="radio" name="${escapeHtmlAttr(statement.id)}" value="${escapeHtmlAttr(item.value)}" ${state.opinions[statement.id] === item.value ? "checked" : ""}>
+                    <span>${escapeHtml(item.value)}</span>
+                  </label>
+                `).join("")}
+              </div>
+            </div>
+          `).join("")}
+
+          <div class="scale-legend">
+            ${LIKERT.map((item) => {
+              const isEndpoint = item.value === "1" || item.value === "7";
+              const text = `<strong>${escapeHtml(item.value)}</strong> – ${escapeHtml(item.label)}`;
+              return `<span>${isEndpoint ? `<strong>${text}</strong>` : text}</span>`;
+            }).join("")}
+          </div>
+
+          <div class="button-row">
+            <button class="btn-secondary" type="button" onclick="resetOpinionAnswers()">Wyczyść odpowiedzi tego kroku</button>
+            <button class="btn-primary" type="submit">Przejdź do testu</button>
+          </div>
+        </form>
+      `;
+    }
+
+    function renderInfoTable(noun, rows) {
+      if (!rows || !rows.length) {
+        return "";
+      }
+      const head = ["A", "B", "C"].map((letter) => `<th>${escapeHtml(noun + " " + letter)}</th>`).join("");
+      const body = rows.map((row) => `
+        <tr>
+          <th scope="row">${escapeHtml(row.name)}</th>
+          <td>${escapeHtml(row.a)}</td>
+          <td>${escapeHtml(row.b)}</td>
+          <td>${escapeHtml(row.c)}</td>
+        </tr>
+      `).join("");
+      return `
+        <div class="table-wrap">
+          <table class="attr-table">
+            <thead><tr><th>Informacja</th>${head}</tr></thead>
+            <tbody>${body}</tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function renderRatingScale(name, current, labels) {
+      return `
+        <div class="choices">
+          ${[1, 2, 3, 4, 5].map((value) => `
+            <label class="choice">
+              <input type="radio" name="${escapeHtmlAttr(name)}" value="${value}" ${String(current || "") === String(value) ? "checked" : ""}>
+              <span class="option-card">
+                <strong>${value}</strong>
+                <span>${escapeHtml(labels[value])}</span>
+              </span>
+            </label>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function renderScenarios() {
+      ensureSectionStarted("scenarios");
+      const scenario = state.scenarios[state.currentScenarioIndex];
+      const response = state.scenarioResponses[scenario.id] || {};
+      const counts = getScenarioCounts();
+      const isLast = state.currentScenarioIndex === state.scenarios.length - 1;
+      return `
+        <div class="section-head">
+          <div class="eyebrow">Krok 5 z 7</div>
+          <h2>Scenariusze decyzyjne</h2>
+        </div>
+
+        ${state.currentScenarioIndex === 0 ? `<div class="info-block stack">${STUDY.scenarioIntro.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("")}</div>` : ""}
+
+        <div class="tag-row">
+          <span class="scenario-counter">Scenariusz ${state.currentScenarioIndex + 1} z 9</span>
+          <span class="mini-tag">Mało: ${counts.low}</span>
+          <span class="mini-tag">Średnio: ${counts.medium}</span>
+          <span class="mini-tag">Dużo: ${counts.high}</span>
+        </div>
+
+        <div class="task-card">
+          <div class="tag-row" style="margin-bottom: 12px;">
+            <span class="badge">${escapeHtml(scenario.categoryLabel)}</span>
+          </div>
+          <h3>${escapeHtml(scenario.title)}</h3>
+          <p style="margin-bottom: 16px;">${escapeHtml(scenario.prompt)}</p>
+
+          ${renderInfoTable(scenario.optionNoun, scenario.attributes)}
+
+          <form onsubmit="submitScenario(event)" class="stack" style="margin-top: 18px;">
+            <div class="stack">
+              <strong>Wybierz odpowiedź:</strong>
+              <div class="choices">
+                ${scenario.options.map((option) => `
+                  <label class="choice">
+                    <input type="radio" name="scenarioAnswer" value="${escapeHtmlAttr(option.value)}" ${response.answer === option.value ? "checked" : ""}>
+                    <span class="option-card">
+                      <strong>${escapeHtml(option.value)}</strong>
+                      <span>${escapeHtml(option.label)}</span>
+                    </span>
+                  </label>
+                `).join("")}
+              </div>
+            </div>
+
+            <div class="stack">
+              <strong>Oceń, jak łatwo było Ci podjąć decyzję (1 – bardzo łatwo, 5 – bardzo trudno):</strong>
+              ${renderRatingScale("scenarioDifficulty", response.difficulty, DIFFICULTY_LABELS)}
+            </div>
+
+            <div class="stack">
+              <strong>Oceń, jak bardzo byłeś(-aś) pewny(-a) swojej decyzji (1 – bardzo niepewny, 5 – bardzo pewny):</strong>
+              ${renderRatingScale("scenarioConfidence", response.confidence, CONFIDENCE_LABELS)}
+            </div>
+
+            <div class="button-row">
+              <button class="btn-primary" type="submit">${isLast ? "Przejdź do zadań z dopytaniem" : "Zapisz i następny scenariusz"}</button>
+            </div>
+          </form>
+        </div>
+      `;
+    }
+
+    function renderFollowups() {
+      ensureSectionStarted("followups");
+      const task = STUDY.followUpTasks[state.currentFollowupIndex];
+      const response = getFollowupResponse(task.id);
+      const maxReveals = Math.max(0, task.infoLevels.length - 1);
+      const reveals = Math.min(response.reveals || 0, maxReveals);
+      const remaining = Math.max(0, maxReveals - reveals);
+      const visibleLevels = task.infoLevels.slice(0, reveals + 1);
+      const isLast = state.currentFollowupIndex === STUDY.followUpTasks.length - 1;
+      const options = ["A", "B", "C"].map((letter) => ({
+        value: letter,
+        label: `${task.optionNoun || "Opcja"} ${letter}`
+      }));
+
+      return `
+        <div class="section-head">
+          <div class="eyebrow">Krok 6 z 7</div>
+          <h2>Zadania z dopytaniem</h2>
+        </div>
+
+        ${state.currentFollowupIndex === 0 ? `<div class="info-block stack">${STUDY.followupIntro.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("")}</div>` : ""}
+
+        <div class="tag-row">
+          <span class="scenario-counter">Zadanie ${state.currentFollowupIndex + 1} z 2</span>
+          <span class="mini-tag">Pozostałe dopytania: ${remaining}</span>
+        </div>
+
+        <div class="task-card">
+          <h3>${escapeHtml(task.title)}</h3>
+          <p style="margin-bottom: 16px;">${escapeHtml(task.prompt)}</p>
+
+          <div class="stack">
+            <strong>Dostępne informacje</strong>
+            ${visibleLevels.map((rows, index) => `
+              <div class="reveal-block">
+                <div class="reveal-tag">${index === 0 ? "Informacje podstawowe" : "Dodatkowe informacje " + index}</div>
+                ${renderInfoTable(task.optionNoun, rows)}
+              </div>
+            `).join("")}
+          </div>
+
+          <div class="stack">
+            <div class="choices">
+              <button class="data-chip" type="button" onclick="requestMoreInfo('${escapeHtmlJs(task.id)}')" ${remaining === 0 ? "disabled" : ""}>
+                ${remaining === 0 ? "Wszystkie informacje zostały odsłonięte" : "Chcę zobaczyć więcej informacji"}
+              </button>
+            </div>
+          </div>
+
+          <form onsubmit="submitFollowup(event)" class="stack">
+            <div class="stack">
+              <strong>Wybierz odpowiedź końcową:</strong>
+              <div class="choices">
+                ${options.map((option) => `
+                  <label class="choice">
+                    <input type="radio" name="followupAnswer" value="${escapeHtmlAttr(option.value)}" ${response.answer === option.value ? "checked" : ""}>
+                    <span class="option-card">
+                      <strong>${escapeHtml(option.value)}</strong>
+                      <span>${escapeHtml(option.label)}</span>
+                    </span>
+                  </label>
+                `).join("")}
+              </div>
+            </div>
+
+            <div class="stack">
+              <strong>Jak bardzo jesteś pewny(-a) swojej odpowiedzi (1 – bardzo niepewny, 5 – bardzo pewny):</strong>
+              ${renderRatingScale("followupConfidence", response.confidence, CONFIDENCE_LABELS)}
+            </div>
+
+            <div class="button-row">
+              <button class="btn-secondary" type="button" onclick="resetFollowupTask('${escapeHtmlJs(task.id)}')">Wyczyść to zadanie</button>
+              <button class="btn-primary" type="submit">${isLast ? "Przejdź do podsumowania" : "Zapisz i następne zadanie"}</button>
+            </div>
+          </form>
+        </div>
+      `;
+    }
+
+    function renderSummary() {
+      if (!state.finishedAt) {
+        state.finishedAt = new Date().toISOString();
+        completeSection("summary");
+        saveState();
+      }
+      return `
+        <div class="section-head">
+          <div class="eyebrow">Krok 7 z 7</div>
+          <h2>Zakończenie</h2>
+        </div>
+
+        <div class="info-block stack">
+          <p>${escapeHtml(STUDY.outro)}</p>
+        </div>
+
+        <div class="summary-actions">
+          <button class="btn-primary" type="button" onclick="exportCsv()">Eksportuj CSV</button>
+          <button class="btn-secondary" type="button" onclick="exportExcel()">Eksportuj Excel</button>
+        </div>
+
+        <div class="button-row tight">
+          <button class="btn-secondary" type="button" onclick="resetAllData()">Rozpocznij od nowa</button>
+        </div>
+      `;
+    }
+
+    function ensureStepStarted() {
+      const current = STEP_DEFS[state.currentStep].id;
+      ensureSectionStarted(current);
+      if (current === "scenarios") {
+        const scenario = state.scenarios[state.currentScenarioIndex];
+        const existing = state.scenarioResponses[scenario.id];
+        if (!existing || !existing.startedAt) {
+          state.scenarioResponses[scenario.id] = {
+            ...(existing || {}),
+            startedAt: new Date().toISOString()
+          };
+          saveState();
+        }
+      }
+      if (current === "followups") {
+        const task = STUDY.followUpTasks[state.currentFollowupIndex];
+        const response = getFollowupResponse(task.id);
+        if (!response.startedAt) {
+          response.startedAt = new Date().toISOString();
+          saveState();
+        }
+      }
+    }
+
+    function submitIntro(event) {
+      event.preventDefault();
+      const form = event.target;
+      const consent = form.consent.checked;
+      if (!consent) {
+        return setMessage("Aby przejść dalej, trzeba zaznaczyć zgodę na udział w badaniu.", "warning");
+      }
+      clearMessage();
+      state.participantCode = form.participantCode.value.trim();
+      state.consent = consent;
+      completeSection("intro");
+      goToNextStep();
+    }
+
+    function submitDemographics(event) {
+      event.preventDefault();
+      const form = event.target;
+      const demographics = {};
+      for (const field of STUDY.demographicsFields) {
+        demographics[field.id] = (form[field.id].value || "").trim();
+      }
+      if (!validateDemographics(demographics)) {
+        return setMessage("Uzupełnij wszystkie pytania metryczki, żeby przejść dalej.", "warning");
+      }
+      clearMessage();
+      state.demographics = demographics;
+      completeSection("demographics");
+      goToNextStep();
+    }
+
+    function submitLogic(event) {
+      event.preventDefault();
+      const formData = new FormData(event.target);
+      const answers = {};
+      for (const task of STUDY.logicTasks) {
+        const value = formData.get(task.id);
+        if (!value) {
+          return setMessage("Odpowiedz na wszystkie zadania testowe, zanim przejdziesz dalej.", "warning");
+        }
+        answers[task.id] = String(value);
+      }
+      if (!validateLogicAnswers(STUDY.logicTasks, answers)) {
+        return setMessage("Odpowiedz na wszystkie zadania testowe, zanim przejdziesz dalej.", "warning");
+      }
+      clearMessage();
+      state.logicAnswers = answers;
+      completeSection("logic");
+      goToNextStep();
+    }
+
+    function submitOpinions(event) {
+      event.preventDefault();
+      const formData = new FormData(event.target);
+      const answers = {};
+      for (const statement of STUDY.opinionStatements) {
+        const value = formData.get(statement.id);
+        if (!value) {
+          return setMessage("Zaznacz odpowiedź dla każdego stwierdzenia w ankiecie opinii.", "warning");
+        }
+        answers[statement.id] = String(value);
+      }
+      if (!validateOpinionAnswers(STUDY.opinionStatements, answers)) {
+        return setMessage("Zaznacz odpowiedź dla każdego stwierdzenia w ankiecie opinii.", "warning");
+      }
+      clearMessage();
+      state.opinions = answers;
+      completeSection("opinions");
+      goToNextStep();
+    }
+
+    function submitScenario(event) {
+      event.preventDefault();
+      const formData = new FormData(event.target);
+      const answer = formData.get("scenarioAnswer");
+      const difficulty = formData.get("scenarioDifficulty");
+      const confidence = formData.get("scenarioConfidence");
+      if (!answer || !difficulty || !confidence) {
+        return setMessage("Wybierz odpowiedź oraz oceń trudność i pewność (1-5).", "warning");
+      }
+      clearMessage();
+      const scenario = state.scenarios[state.currentScenarioIndex];
+      const previous = state.scenarioResponses[scenario.id] || {};
+      const completedAt = new Date().toISOString();
+      state.scenarioResponses[scenario.id] = {
+        ...previous,
+        answer: String(answer),
+        difficulty: String(difficulty),
+        confidence: String(confidence),
+        completedAt,
+        durationSeconds: diffSeconds(previous.startedAt, completedAt)
+      };
+      if (state.currentScenarioIndex < state.scenarios.length - 1) {
+        state.currentScenarioIndex += 1;
+        ensureSectionStarted("scenarios");
+      } else {
+        completeSection("scenarios");
+        goToNextStep();
+        return;
+      }
+      saveState();
+      renderApp();
+    }
+
+    function submitFollowup(event) {
+      event.preventDefault();
+      const formData = new FormData(event.target);
+      const answer = formData.get("followupAnswer");
+      const confidence = formData.get("followupConfidence");
+      if (!answer || !confidence) {
+        return setMessage("Wybierz odpowiedź końcową i oceń pewność (1-5).", "warning");
+      }
+      clearMessage();
+      const task = STUDY.followUpTasks[state.currentFollowupIndex];
+      const response = getFollowupResponse(task.id);
+      const completedAt = new Date().toISOString();
+      response.answer = String(answer);
+      response.confidence = String(confidence);
+      response.completedAt = completedAt;
+      response.durationSeconds = diffSeconds(response.startedAt, completedAt);
+      if (state.currentFollowupIndex < STUDY.followUpTasks.length - 1) {
+        state.currentFollowupIndex += 1;
+        saveState();
+        renderApp();
+        return;
+      }
+      completeSection("followups");
+      goToNextStep();
+    }
+
+    function goToNextStep() {
+      state.currentStep = Math.min(state.currentStep + 1, STEP_DEFS.length - 1);
+      saveState();
+      renderApp();
+    }
+
+    function getFollowupResponse(taskId) {
+      let response = state.followups.find((item) => item.taskId === taskId);
+      if (!response) {
+        response = {
+          taskId,
+          reveals: 0,
+          answer: "",
+          confidence: "",
+          startedAt: "",
+          completedAt: "",
+          durationSeconds: ""
+        };
+        state.followups.push(response);
+      }
+      return response;
+    }
+
+    function requestMoreInfo(taskId) {
+      clearMessage();
+      const task = STUDY.followUpTasks.find((item) => item.id === taskId);
+      const maxReveals = task ? Math.max(0, task.infoLevels.length - 1) : 0;
+      const response = getFollowupResponse(taskId);
+      if ((response.reveals || 0) >= maxReveals) {
+        return setMessage("Wszystkie dostępne informacje zostały już odsłonięte dla tego zadania.", "warning");
+      }
+      response.reveals = (response.reveals || 0) + 1;
+      saveState();
+      renderApp();
+    }
+
+    function resetLogicAnswers() {
+      state.logicAnswers = {};
+      clearMessage();
+      saveState();
+      renderApp();
+    }
+
+    function resetOpinionAnswers() {
+      state.opinions = {};
+      clearMessage();
+      saveState();
+      renderApp();
+    }
+
+    function resetFollowupTask(taskId) {
+      const response = getFollowupResponse(taskId);
+      response.reveals = 0;
+      response.answer = "";
+      response.confidence = "";
+      response.startedAt = new Date().toISOString();
+      response.completedAt = "";
+      response.durationSeconds = "";
+      clearMessage();
+      saveState();
+      renderApp();
+    }
+
+    function clearSavedDraft() {
+      clearDraftStorage();
+      setMessage("Zapis roboczy został usunięty z pamięci przeglądarki.", "success");
+    }
+
+    function resetAllData() {
+      if (!confirm("Czy na pewno chcesz wyczyścić całą bieżącą sesję?")) {
+        return;
+      }
+      clearDraftStorage();
+      resetState();
+    }
+
+    function countAnsweredItems() {
+      const logic = Object.keys(state.logicAnswers).length;
+      const opinions = Object.keys(state.opinions).length;
+      const scenarios = Object.values(state.scenarioResponses).filter((item) => item.answer).length;
+      const followups = state.followups.filter((item) => item.answer).length;
+      const demographics = Object.values(state.demographics).filter(Boolean).length;
+      return logic + opinions + scenarios + followups + demographics + (state.consent ? 1 : 0);
+    }
+
+    function getScenarioCounts() {
+      return countScenarioLevels(state.scenarios);
+    }
+
+    function buildMetadataRows() {
+      const rows = [
+        ["pole", "wartość"],
+        ["id_uczestnika", state.studyId],
+        ["kod_uczestnika", state.participantCode || ""],
+        ["data_badania", formatDateOnly(state.startedAt)],
+        ["godzina_rozpoczecia", formatTimeOnly(state.startedAt)],
+        ["godzina_zakonczenia", formatTimeOnly(state.finishedAt)],
+        ["zgoda", state.consent ? "tak" : "nie"]
+      ];
+      STUDY.demographicsFields.forEach((field) => {
+        rows.push([field.id, state.demographics[field.id] || ""]);
+      });
+      return rows;
+    }
+
+    function buildAnswerRows() {
+      const rows = [];
+      rows.push(...buildIntroRows());
+      rows.push(...buildLogicRows());
+      rows.push(...buildOpinionRows());
+      rows.push(...buildScenarioRows());
+      rows.push(...buildFollowupRows());
+      return rows;
+    }
+
+    function buildIntroRows() {
+      const introTiming = state.sectionTimings.intro || {};
+      const demoTiming = state.sectionTimings.demographics || {};
+      const rows = [
+        makeRow("intro", "consent", "Zgoda na udział", state.consent ? "tak" : "nie", {
+          startedAt: introTiming.startedAt,
+          completedAt: introTiming.completedAt,
+          durationSeconds: introTiming.durationSeconds
+        })
+      ];
+      STUDY.demographicsFields.forEach((field) => {
+        rows.push(makeRow("demographics", field.id, field.label, state.demographics[field.id] || "", {
+          startedAt: demoTiming.startedAt,
+          completedAt: demoTiming.completedAt,
+          durationSeconds: demoTiming.durationSeconds
+        }));
+      });
+      return rows;
+    }
+
+    function buildLogicRows() {
+      const timing = state.sectionTimings.logic || {};
+      return STUDY.logicTasks.map((task) => {
+        const selected = task.options.find((option) => option.value === state.logicAnswers[task.id]);
+        return makeRow("logic", task.id, task.prompt, selected ? `${selected.value} - ${selected.label}` : "", {
+          startedAt: timing.startedAt,
+          completedAt: timing.completedAt,
+          durationSeconds: timing.durationSeconds
+        });
+      });
+    }
+
+    function buildOpinionRows() {
+      const timing = state.sectionTimings.opinions || {};
+      return STUDY.opinionStatements.map((statement) => {
+        const selected = LIKERT.find((item) => item.value === state.opinions[statement.id]);
+        return makeRow("opinions", statement.id, statement.text, selected ? `${selected.value} - ${selected.label}` : "", {
+          startedAt: timing.startedAt,
+          completedAt: timing.completedAt,
+          durationSeconds: timing.durationSeconds
+        });
+      });
+    }
+
+    function buildScenarioRows() {
+      return state.scenarios.map((scenario) => {
+        const response = state.scenarioResponses[scenario.id] || {};
+        const selected = scenario.options.find((option) => option.value === response.answer);
+        return makeRow("scenariusz", scenario.id, scenario.title, selected ? selected.value : "", {
+          scenarioId: scenario.id,
+          scenarioName: scenario.name || scenario.title,
+          levelLabel: scenario.categoryLabel,
+          displayOrder: scenario.displayOrder,
+          difficulty: response.difficulty || "",
+          confidence: response.confidence || "",
+          startedAt: response.startedAt || "",
+          completedAt: response.completedAt || "",
+          durationSeconds: response.durationSeconds || ""
+        });
+      });
+    }
+
+    function buildFollowupRows() {
+      return STUDY.followUpTasks.map((task) => {
+        const response = getFollowupResponse(task.id);
+        return makeRow("followup", task.id, task.title, response.answer || "", {
+          confidence: response.confidence || "",
+          extraRequestsCount: response.reveals || 0,
+          startedAt: response.startedAt || "",
+          completedAt: response.completedAt || "",
+          durationSeconds: response.durationSeconds || ""
+        });
+      });
+    }
+
+    function makeRow(section, questionId, questionLabel, answer, extra) {
+      const info = extra || {};
+      const timeSource = info.completedAt || info.startedAt || state.startedAt;
+      return {
+        id_uczestnika: state.studyId,
+        kod_uczestnika: state.participantCode || "",
+        data_badania: formatDateOnly(state.startedAt),
+        godzina_wykonania: formatTimeOnly(timeSource),
+        sekcja: section,
+        pytanie_id: questionId,
+        pytanie: questionLabel,
+        scenariusz_id: info.scenarioId || "",
+        scenariusz_nazwa: info.scenarioName || "",
+        poziom_informacji: info.levelLabel || "",
+        kolejnosc_wyswietlenia: typeof info.displayOrder !== "undefined" ? info.displayOrder : "",
+        odpowiedz: answer,
+        ocena_pewnosci: info.confidence || "",
+        ocena_trudnosci: info.difficulty || "",
+        liczba_dodatkowych_informacji: typeof info.extraRequestsCount !== "undefined" ? info.extraRequestsCount : ""
+      };
+    }
+
+    function exportCsv() {
+      const rows = buildAnswerRows();
+      const headers = Object.keys(rows[0] || {});
+      const lines = [headers.join(",")];
+      rows.forEach((row) => {
+        lines.push(headers.map((header) => csvValue(row[header])).join(","));
+      });
+      downloadFile(`ankieta-${fileStamp()}.csv`, lines.join("\r\n"), "text/csv;charset=utf-8");
+      setMessage("Wyeksportowano plik CSV z odpowiedziami.", "success");
+    }
+
+    function exportExcel() {
+      const metadata = buildMetadataRows();
+      const answers = buildAnswerRows();
+      const answerTable = [
+        Object.keys(answers[0] || {}),
+        ...answers.map((row) => Object.values(row))
+      ];
+      const xlsx = buildXlsx([
+        { name: "Metadane", rows: metadata },
+        { name: "Odpowiedzi", rows: answerTable }
+      ]);
+      downloadBlob(`ankieta-${fileStamp()}.xlsx`, xlsx,
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+      setMessage("Wyeksportowano plik XLSX z odpowiedziami.", "success");
+    }
+
+    function columnLetter(index) {
+      let result = "";
+      let value = index;
+      while (value >= 0) {
+        result = String.fromCharCode((value % 26) + 65) + result;
+        value = Math.floor(value / 26) - 1;
+      }
+      return result;
+    }
+
+    function buildSheetXml(rows) {
+      const body = rows.map((row, rowIndex) => {
+        const cells = row.map((cell, colIndex) => {
+          const ref = columnLetter(colIndex) + (rowIndex + 1);
+          const styleAttr = rowIndex === 0 ? ' s="1"' : "";
+          return `<c r="${ref}"${styleAttr} t="inlineStr"><is><t xml:space="preserve">${escapeXml(String(cell ?? ""))}</t></is></c>`;
+        }).join("");
+        return `<row r="${rowIndex + 1}">${cells}</row>`;
+      }).join("");
+      return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>` +
+        `<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">` +
+        `<sheetData>${body}</sheetData></worksheet>`;
+    }
+
+    function buildXlsx(sheets) {
+      const files = [];
+      const contentTypes = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>` +
+        `<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">` +
+        `<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>` +
+        `<Default Extension="xml" ContentType="application/xml"/>` +
+        `<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>` +
+        `<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>` +
+        sheets.map((sheet, index) => `<Override PartName="/xl/worksheets/sheet${index + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join("") +
+        `</Types>`;
+      files.push({ name: "[Content_Types].xml", data: contentTypes });
+
+      files.push({
+        name: "_rels/.rels",
+        data: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>` +
+          `<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">` +
+          `<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>` +
+          `</Relationships>`
+      });
+
+      const sheetTags = sheets.map((sheet, index) => `<sheet name="${escapeXml(sheet.name)}" sheetId="${index + 1}" r:id="rId${index + 1}"/>`).join("");
+      files.push({
+        name: "xl/workbook.xml",
+        data: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>` +
+          `<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">` +
+          `<sheets>${sheetTags}</sheets></workbook>`
+      });
+
+      const sheetRels = sheets.map((sheet, index) => `<Relationship Id="rId${index + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${index + 1}.xml"/>`).join("");
+      files.push({
+        name: "xl/_rels/workbook.xml.rels",
+        data: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>` +
+          `<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">` +
+          sheetRels +
+          `<Relationship Id="rId${sheets.length + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>` +
+          `</Relationships>`
+      });
+
+      files.push({
+        name: "xl/styles.xml",
+        data: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>` +
+          `<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">` +
+          `<fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts>` +
+          `<fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills>` +
+          `<borders count="1"><border/></borders>` +
+          `<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>` +
+          `<cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>` +
+          `<xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/></cellXfs>` +
+          `</styleSheet>`
+      });
+
+      sheets.forEach((sheet, index) => {
+        files.push({ name: `xl/worksheets/sheet${index + 1}.xml`, data: buildSheetXml(sheet.rows) });
+      });
+
+      return zipStore(files);
+    }
+
+    const CRC_TABLE = (function () {
+      const table = new Uint32Array(256);
+      for (let n = 0; n < 256; n += 1) {
+        let c = n;
+        for (let k = 0; k < 8; k += 1) {
+          c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+        }
+        table[n] = c >>> 0;
+      }
+      return table;
+    })();
+
+    function crc32(bytes) {
+      let crc = 0xFFFFFFFF;
+      for (let i = 0; i < bytes.length; i += 1) {
+        crc = CRC_TABLE[(crc ^ bytes[i]) & 0xFF] ^ (crc >>> 8);
+      }
+      return (crc ^ 0xFFFFFFFF) >>> 0;
+    }
+
+    function zipStore(files) {
+      const encoder = new TextEncoder();
+      const chunks = [];
+      const central = [];
+      let offset = 0;
+
+      function pushUint16(arr, value) {
+        arr.push(value & 0xFF, (value >>> 8) & 0xFF);
+      }
+      function pushUint32(arr, value) {
+        arr.push(value & 0xFF, (value >>> 8) & 0xFF, (value >>> 16) & 0xFF, (value >>> 24) & 0xFF);
+      }
+
+      files.forEach((file) => {
+        const nameBytes = encoder.encode(file.name);
+        const dataBytes = encoder.encode(file.data);
+        const crc = crc32(dataBytes);
+
+        const local = [];
+        pushUint32(local, 0x04034b50);
+        pushUint16(local, 20);
+        pushUint16(local, 0x0800);
+        pushUint16(local, 0);
+        pushUint16(local, 0);
+        pushUint16(local, 0);
+        pushUint32(local, crc);
+        pushUint32(local, dataBytes.length);
+        pushUint32(local, dataBytes.length);
+        pushUint16(local, nameBytes.length);
+        pushUint16(local, 0);
+        const localHeader = new Uint8Array(local);
+
+        chunks.push(localHeader, nameBytes, dataBytes);
+
+        const centralEntry = [];
+        pushUint32(centralEntry, 0x02014b50);
+        pushUint16(centralEntry, 20);
+        pushUint16(centralEntry, 20);
+        pushUint16(centralEntry, 0x0800);
+        pushUint16(centralEntry, 0);
+        pushUint16(centralEntry, 0);
+        pushUint16(centralEntry, 0);
+        pushUint32(centralEntry, crc);
+        pushUint32(centralEntry, dataBytes.length);
+        pushUint32(centralEntry, dataBytes.length);
+        pushUint16(centralEntry, nameBytes.length);
+        pushUint16(centralEntry, 0);
+        pushUint16(centralEntry, 0);
+        pushUint16(centralEntry, 0);
+        pushUint16(centralEntry, 0);
+        pushUint32(centralEntry, 0);
+        pushUint32(centralEntry, offset);
+        central.push(new Uint8Array(centralEntry), nameBytes);
+
+        offset += localHeader.length + nameBytes.length + dataBytes.length;
+      });
+
+      const centralStart = offset;
+      let centralSize = 0;
+      central.forEach((part) => { centralSize += part.length; });
+
+      const end = [];
+      pushUint32(end, 0x06054b50);
+      pushUint16(end, 0);
+      pushUint16(end, 0);
+      pushUint16(end, files.length);
+      pushUint16(end, files.length);
+      pushUint32(end, centralSize);
+      pushUint32(end, centralStart);
+      pushUint16(end, 0);
+
+      const allParts = chunks.concat(central, [new Uint8Array(end)]);
+      let totalLength = 0;
+      allParts.forEach((part) => { totalLength += part.length; });
+      const result = new Uint8Array(totalLength);
+      let position = 0;
+      allParts.forEach((part) => {
+        result.set(part, position);
+        position += part.length;
+      });
+      return result;
+    }
+
+    function downloadRequirementsNote() {
+      const content = [
+        "Lista kluczowych punktów [Do ustalenia] i [Do przygotowania materiału]",
+        "",
+        "1. Finalne treści wszystkich pytań, scenariuszy i odpowiedzi A/B/C.",
+        "2. Materiały obrazkowe do zadań testowych wraz z prawem do użycia.",
+        "3. Ostateczny podział scenariuszy na mało / średnio / dużo informacji.",
+        "4. Dokładna treść dodatkowych danych możliwych do odsłonięcia w 2 zadaniach.",
+        "5. Docelowy format eksportu: lista kolumn, identyfikatory, czasy, znaczniki czasu.",
+        "6. Treść zgody badawczej, informacji o badaniu i wymagania RODO/etyczne.",
+        "7. Decyzja: wersja tylko offline czy finalnie także online z bazą danych.",
+        "8. Wymagania wizualne: prosty formularz czy bardziej testowy interfejs."
+      ].join("\\r\\n");
+      downloadFile("do-ustalenia-i-materialy.txt", content, "text/plain;charset=utf-8");
+      setMessage("Pobrano skróconą checklistę [Do ustalenia] i [Do przygotowania materiału].", "success");
+    }
+
+    function downloadFile(filename, content, mimeType) {
+      const blob = new Blob(["\uFEFF", content], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function downloadBlob(filename, bytes, mimeType) {
+      const blob = new Blob([bytes], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function fileStamp() {
+      return new Date().toISOString().replace(/[:.]/g, "-");
+    }
+
+    function csvValue(value) {
+      const stringValue = String(value ?? "");
+      return `"${stringValue.replace(/"/g, '""')}"`;
+    }
+
+    function formatDateOnly(value) {
+      if (!value) {
+        return "";
+      }
+      return new Intl.DateTimeFormat("pl-PL", { dateStyle: "short" }).format(new Date(value));
+    }
+
+    function formatTimeOnly(value) {
+      if (!value) {
+        return "";
+      }
+      return new Intl.DateTimeFormat("pl-PL", { hour: "2-digit", minute: "2-digit" }).format(new Date(value));
+    }
+
+    function formatDateTime(value) {
+      if (!value) {
+        return "jeszcze nie zapisano";
+      }
+      return new Intl.DateTimeFormat("pl-PL", {
+        dateStyle: "short",
+        timeStyle: "medium"
+      }).format(new Date(value));
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function escapeHtmlAttr(value) {
+      return escapeHtml(value);
+    }
+
+    function escapeHtmlJs(value) {
+      return String(value ?? "")
+        .replaceAll("\\", "\\\\")
+        .replaceAll("'", "\\'");
+    }
+
+    function escapeXml(value) {
+      return escapeHtml(value);
+    }
+
+    window.__ANKIETA_TEST_API__ = {
+      getState: () => JSON.parse(JSON.stringify(state)),
+      getStepId: () => STEP_DEFS[state.currentStep].id
+    };
+
+    window.submitIntro = submitIntro;
+    window.submitDemographics = submitDemographics;
+    window.submitLogic = submitLogic;
+    window.submitOpinions = submitOpinions;
+    window.submitScenario = submitScenario;
+    window.submitFollowup = submitFollowup;
+    window.requestMoreInfo = requestMoreInfo;
+    window.resetLogicAnswers = resetLogicAnswers;
+    window.resetOpinionAnswers = resetOpinionAnswers;
+    window.resetFollowupTask = resetFollowupTask;
+    window.resetAllData = resetAllData;
+    window.clearSavedDraft = clearSavedDraft;
+    window.exportCsv = exportCsv;
+    window.exportExcel = exportExcel;
+    window.downloadRequirementsNote = downloadRequirementsNote;
+  </script>
+</body>
+</html>
