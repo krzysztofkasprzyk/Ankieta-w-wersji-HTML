@@ -51,10 +51,7 @@
     }
 
     .hero {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
+      display: grid;
       gap: 18px;
       padding: 24px;
       border: 1px solid rgba(23, 49, 62, 0.08);
@@ -64,12 +61,6 @@
         url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%23127a72' stroke-opacity='0.1'%3E%3Cpath d='M0 80h160M80 0v160'/%3E%3Ccircle cx='80' cy='80' r='46'/%3E%3Ccircle cx='80' cy='80' r='22'/%3E%3C/g%3E%3C/svg%3E");
       box-shadow: var(--shadow);
       overflow: hidden;
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
     }
 
     .hero-top {
@@ -715,6 +706,207 @@
       font-size: 0.85rem;
       margin-right: 8px;
     }
+
+    /* Skala Likerta 1-7 z opisem przy kazdej odpowiedzi */
+    .likert-scale {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
+      gap: 6px;
+    }
+
+    .likert-scale .likert-option {
+      display: block;
+      width: 100%;
+    }
+
+    .likert-scale .likert-option span {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-align: left;
+      min-height: 0;
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      line-height: 1.2;
+      white-space: normal;
+      word-break: break-word;
+    }
+
+    .likert-scale .likert-option span .lk-label {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .likert-scale .likert-option span .lk-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      min-width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      background: var(--accent-soft, #f0f7f6);
+      color: var(--accent-strong, #0c6b63);
+      font-weight: 800;
+      font-size: 0.8rem;
+      flex: 0 0 auto;
+    }
+
+    .likert-scale .likert-option input:checked + span .lk-num {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    /* Opcja D w zadaniach z dopytaniem (akcja: odsłoń więcej informacji) */
+    .choice-more {
+      flex-basis: 100%;
+      display: block;
+      width: 100%;
+      padding: 0;
+      margin: 0;
+      border: none;
+      background: transparent;
+      text-align: left;
+      cursor: pointer;
+      font: inherit;
+    }
+
+    .choice-more .option-card.more {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      border-style: dashed;
+      border-color: var(--accent, #0c6b63);
+      background: var(--accent-soft, #f0f7f6);
+      color: var(--accent-strong, #0b5b55);
+      font-weight: 700;
+    }
+
+    .choice-more .option-card.more strong {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      min-width: 28px;
+      height: 28px;
+      margin: 0;
+      border-radius: 999px;
+      background: var(--accent, #0c6b63);
+      color: #fff;
+    }
+
+    .choice-more:hover .option-card.more {
+      border-color: var(--accent-strong, #0b5b55);
+      transform: translateY(-1px);
+    }
+
+    .choice-more:disabled {
+      cursor: default;
+      opacity: 0.6;
+    }
+
+    .choice-more:disabled .option-card.more {
+      border-style: solid;
+      border-color: rgba(23, 49, 62, 0.12);
+      background: transparent;
+      color: var(--muted);
+    }
+
+    .choice-more:disabled .option-card.more strong {
+      background: rgba(23, 49, 62, 0.18);
+    }
+
+    /* Walidacja - podswietlenie brakujacych odpowiedzi */
+    .field-error {
+      border: 2px solid var(--warning, #b55d2b) !important;
+      border-radius: var(--radius-md, 16px);
+      background: var(--warning-soft, #ffe6d6) !important;
+      padding: 12px 14px;
+    }
+
+    .field-error-note {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+      color: var(--warning, #b55d2b);
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    /* Mala ikona resetu */
+    .reset-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      min-width: 38px;
+      height: 38px;
+      padding: 0;
+      border-radius: 999px;
+      border: 1px solid rgba(23, 49, 62, 0.12);
+      background: transparent;
+      color: var(--muted);
+      font-size: 1.2rem;
+      line-height: 1;
+      opacity: 0.65;
+    }
+
+    .reset-icon:hover {
+      opacity: 1;
+      border-color: rgba(181, 93, 43, 0.35);
+      color: var(--warning);
+    }
+
+    /* Modal potwierdzenia */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(23, 49, 62, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 1000;
+    }
+
+    .modal-box {
+      background: var(--panel-strong, #fff);
+      border-radius: var(--radius-lg, 22px);
+      padding: 24px;
+      max-width: 420px;
+      width: 100%;
+      box-shadow: var(--shadow);
+      display: grid;
+      gap: 18px;
+    }
+
+    .modal-box p {
+      font-weight: 600;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .submit-status {
+      display: grid;
+      gap: 10px;
+      padding: 18px;
+      border-radius: var(--radius-md, 16px);
+      background: var(--accent-soft, #daf1ee);
+      color: var(--accent-strong, #0b5b55);
+      font-weight: 600;
+    }
+
+    .submit-status.error {
+      background: var(--warning-soft, #ffe6d6);
+      color: var(--warning, #b55d2b);
+    }
   </style>
 </head>
 <body>
@@ -723,9 +915,6 @@
       <div class="hero-copy">
         <h1>Ankieta badawcza</h1>
       </div>
-      <div class="hero-actions">
-        <button class="btn-secondary" type="button" onclick="resetAllData()">Rozpocznij test od nowa</button>
-      </div>
     </header>
 
     <main id="app"></main>
@@ -733,15 +922,6 @@
 
   <script>
     (function (global) {
-      function shuffleArray(items) {
-        const copy = [...items];
-        for (let index = copy.length - 1; index > 0; index -= 1) {
-          const swapIndex = Math.floor(Math.random() * (index + 1));
-          [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
-        }
-        return copy;
-      }
-
       const VISIBLE_COUNT = { low: 3, medium: 5, high: 8 };
 
       const CATEGORY_LABEL = {
@@ -750,8 +930,20 @@
         high: "Dużo informacji"
       };
 
-      function pickVersion() {
-        return Math.floor(Math.random() * 3) + 1;
+      // Stały przydział poziomu informacji do kolejnych zadań (1-9) w każdym wariancie.
+      // Kolejność zadań pozostaje zawsze 1..9 - zmienia się wyłącznie ilość informacji.
+      const SCENARIO_VARIANTS = {
+        1: ["low", "low", "low", "medium", "medium", "medium", "high", "high", "high"],
+        2: ["medium", "medium", "medium", "high", "high", "high", "low", "low", "low"],
+        3: ["high", "high", "high", "low", "low", "low", "medium", "medium", "medium"]
+      };
+
+      function normalizeVariant(variant) {
+        const value = parseInt(variant, 10);
+        if (value === 1 || value === 2 || value === 3) {
+          return value;
+        }
+        return 1;
       }
 
       function buildOptions(noun) {
@@ -761,19 +953,9 @@
         }));
       }
 
-      function buildBalancedLevels(count) {
-        const pool = ["low", "medium", "high"];
-        const levels = [];
-        for (let index = 0; index < count; index += 1) {
-          levels.push(pool[index % pool.length]);
-        }
-        return shuffleArray(levels);
-      }
-
-      function buildDecisionSet(tasks) {
-        const shuffledTasks = shuffleArray(tasks || []);
-        const levels = buildBalancedLevels(shuffledTasks.length);
-        return shuffledTasks.map((task, index) => {
+      function buildDecisionSet(tasks, variant) {
+        const levels = SCENARIO_VARIANTS[normalizeVariant(variant)];
+        return (tasks || []).map((task, index) => {
           const level = levels[index] || "low";
           const count = VISIBLE_COUNT[level];
           return {
@@ -822,9 +1004,8 @@
       }
 
       global.AnkietaLogic = {
-        shuffleArray,
-        pickVersion,
-        buildBalancedLevels,
+        SCENARIO_VARIANTS,
+        normalizeVariant,
         buildOptions,
         buildDecisionSet,
         getScenarioCounts,
@@ -836,7 +1017,7 @@
   </script>
   <script>
     const {
-      pickVersion,
+      normalizeVariant,
       buildDecisionSet,
       getScenarioCounts: countScenarioLevels,
       validateDemographics,
@@ -844,7 +1025,20 @@
       validateOpinionAnswers
     } = window.AnkietaLogic;
 
+    // === KONFIGURACJA GLOBALNA ===================================================
+    // Adres wdrożonego Google Apps Script (Web App -> Wdróż -> Aplikacja internetowa).
+    // Podmień poniższy URL, aby wysyłać wyniki na inne konto / do innego folderu.
+    const API_URL = "https://script.google.com/macros/s/AKfycbzKEIyr2DE7RjjiK2XQvpDfv2ceNrXr7sDjNdIuRlyEjGzKsI2cf7Ee-_Tp6xPRS6le/exec";
+    // Maksymalny czas oczekiwania na odpowiedź serwera (ms).
+    const API_TIMEOUT_MS = 8000;
+    // ============================================================================
+
+    function isApiConfigured() {
+      return typeof API_URL === "string" && API_URL.indexOf("exec") !== -1 && API_URL.indexOf("xxxx") === -1;
+    }
+
     const STORAGE_KEY = "ankieta-zl2-draft";
+    const ROTATION_KEY = "ankieta-zl2-rotation";
 
     const STEP_DEFS = [
       { id: "intro", title: "Wstęp", desc: "Informacja i zgoda" },
@@ -853,17 +1047,17 @@
       { id: "logic", title: "Test", desc: "8 zadań" },
       { id: "scenarios", title: "Scenariusze", desc: "9 decyzji" },
       { id: "followups", title: "Zadania z dopytaniem", desc: "2 zadania" },
-      { id: "summary", title: "Zakończenie", desc: "Eksport" }
+      { id: "summary", title: "Zakończenie", desc: "Podsumowanie" }
     ];
 
     const LIKERT = [
-      { value: "1", label: "Zdecydowanie się nie zgadzam" },
-      { value: "2", label: "Nie zgadzam się" },
-      { value: "3", label: "Raczej się nie zgadzam" },
-      { value: "4", label: "Ani się nie zgadzam, ani się zgadzam" },
-      { value: "5", label: "Raczej się zgadzam" },
-      { value: "6", label: "Zgadzam się" },
-      { value: "7", label: "Zdecydowanie się zgadzam" }
+      { value: "1", label: "zdecydowanie się nie zgadzam" },
+      { value: "2", label: "nie zgadzam się" },
+      { value: "3", label: "raczej się nie zgadzam" },
+      { value: "4", label: "ani się zgadzam, ani nie zgadzam" },
+      { value: "5", label: "raczej się zgadzam" },
+      { value: "6", label: "zgadzam się" },
+      { value: "7", label: "zdecydowanie się zgadzam" }
     ];
 
     const CONFIDENCE_LABELS = {
@@ -923,7 +1117,7 @@
           id: "education",
           label: "Podaj swoje wykształcenie",
           type: "select",
-          options: ["wyższe", "średnie", "podstawowe"]
+          options: ["podstawowe", "zawodowe", "średnie", "wyższe"]
         },
         {
           id: "workStatus",
@@ -937,12 +1131,13 @@
           type: "select",
           options: [
             "pracownik produkcyjny",
-            "specjalista",
-            "kierownik średniego szczebla (manager)",
-            "kadra zarządzająca wyższego szczebla",
-            "dyrektor",
+            "specjalista / ekspert",
+            "kierownik średniego szczebla (kierownik, manager)",
+            "kadra zarządzająca wyższego szczebla (dyrektor, zarząd)",
             "właściciel firmy",
-            "inne",
+            "samozatrudniony",
+            "emeryt / rencista",
+            "wolny zawód",
             "nie pracuję"
           ]
         },
@@ -1282,19 +1477,94 @@
       outro: "Dziękuję bardzo za poświęcony czas na wypełnienie tego badania."
     };
 
-    let state = loadState() || createInitialState();
-    renderApp();
+    let state = loadState();
+    if (state) {
+      renderApp();
+      if (!state.scenarioVariant) {
+        // Starszy szkic bez wariantu - przypisz zanim respondent dojdzie do scenariuszy.
+        ensureVariantForLoadedState();
+      }
+    } else {
+      // Nowa sesja: najpierw pobierz wariant scenariusza (rotacja), potem renderuj.
+      state = createInitialState(1);
+      renderApp();
+      assignVariant().then((variant) => {
+        applyVariant(variant);
+      });
+    }
 
-    function createInitialState() {
+    function applyVariant(variant) {
+      const normalized = normalizeVariant(variant);
+      state.scenarioVariant = normalized;
+      // Rebuduj scenariusze tylko jeśli respondent jeszcze na nie nie odpowiedział.
+      const answered = state.scenarioResponses && Object.values(state.scenarioResponses).some((item) => item && item.answer);
+      const currentStepId = STEP_DEFS[state.currentStep] ? STEP_DEFS[state.currentStep].id : "intro";
+      const scenariosLocked = answered || currentStepId === "scenarios" || currentStepId === "followups" || currentStepId === "summary";
+      if (!scenariosLocked) {
+        state.scenarios = buildDecisionSet(STUDY.decisionTasks, normalized);
+      }
+      saveState();
+      renderApp();
+    }
+
+    function ensureVariantForLoadedState() {
+      assignVariant().then((variant) => {
+        applyVariant(variant);
+      });
+    }
+
+    async function assignVariant() {
+      // Priorytet: serwerowy licznik rotacyjny (równy rozkład 1/2/3 między respondentami).
+      if (isApiConfigured()) {
+        try {
+          const controller = new AbortController();
+          const timer = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
+          const response = await fetch(`${API_URL}?action=assign`, {
+            method: "GET",
+            signal: controller.signal
+          });
+          clearTimeout(timer);
+          const data = await response.json();
+          if (data && (data.variant === 1 || data.variant === 2 || data.variant === 3)) {
+            return data.variant;
+          }
+        } catch (error) {
+          console.warn("Nie udało się pobrać wariantu z serwera, używam rotacji lokalnej.", error);
+        }
+      }
+      return localRotationVariant();
+    }
+
+    function localRotationVariant() {
+      let counter = 0;
+      try {
+        counter = parseInt(localStorage.getItem(ROTATION_KEY) || "0", 10) || 0;
+      } catch (error) {
+        counter = 0;
+      }
+      counter += 1;
+      try {
+        localStorage.setItem(ROTATION_KEY, String(counter));
+      } catch (error) {
+        /* brak dostępu do localStorage - kontynuuj */
+      }
+      return ((counter - 1) % 3) + 1;
+    }
+
+    function createInitialState(variant) {
       const startedAt = new Date().toISOString();
+      const scenarioVariant = normalizeVariant(variant);
       return {
         studyId: createSessionId(),
-        participantCode: "",
+        scenarioVariant,
         currentStep: 0,
         message: "",
+        errors: {},
         startedAt,
         finishedAt: "",
         consent: false,
+        submissionStatus: "",
+        submittedAt: "",
         demographics: {
           gender: "",
           age: "",
@@ -1306,7 +1576,7 @@
         sectionTimings: {},
         logicAnswers: {},
         opinions: {},
-        scenarios: buildDecisionSet(STUDY.decisionTasks),
+        scenarios: buildDecisionSet(STUDY.decisionTasks, scenarioVariant),
         scenarioResponses: {},
         currentScenarioIndex: 0,
         followups: STUDY.followUpTasks.map((task) => ({
@@ -1356,10 +1626,12 @@
     }
 
     function resetState() {
-      state = createInitialState();
+      const variant = localRotationVariant();
+      state = createInitialState(variant);
       clearMessage();
       saveState();
       renderApp();
+      ensureVariantForLoadedState();
     }
 
     function clearDraftStorage() {
@@ -1377,6 +1649,82 @@
 
     function clearMessage() {
       state.message = "";
+    }
+
+    function setErrors(keys) {
+      state.errors = {};
+      (keys || []).forEach((key) => { state.errors[key] = true; });
+    }
+
+    function clearErrors() {
+      state.errors = {};
+    }
+
+    function hasError(key) {
+      return Boolean(state.errors && state.errors[key]);
+    }
+
+    function errorClass(key) {
+      return hasError(key) ? " field-error" : "";
+    }
+
+    function errorNote(key) {
+      return hasError(key)
+        ? `<div class="field-error-note">⚠ Odpowiedz na to pytanie.</div>`
+        : "";
+    }
+
+    const VALIDATION_MESSAGE = "Aby przejść dalej odpowiedz na wszystkie wymagane pytania.";
+
+    function failValidation(keys) {
+      setErrors(keys);
+      setMessage(VALIDATION_MESSAGE, "warning");
+      scrollToFirstError();
+    }
+
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function scrollToFirstError() {
+      const el = document.querySelector(".field-error");
+      if (el && typeof el.scrollIntoView === "function") {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+      } else {
+        scrollToTop();
+      }
+    }
+
+    function confirmModal(text) {
+      return new Promise((resolve) => {
+        const overlay = document.createElement("div");
+        overlay.className = "modal-overlay";
+        overlay.innerHTML = `
+          <div class="modal-box" role="dialog" aria-modal="true">
+            <p>${escapeHtml(text)}</p>
+            <div class="modal-actions">
+              <button class="btn-secondary" type="button" data-action="cancel">Anuluj</button>
+              <button class="btn-primary" type="button" data-action="confirm">Tak</button>
+            </div>
+          </div>
+        `;
+        function close(result) {
+          overlay.remove();
+          resolve(result);
+        }
+        overlay.addEventListener("click", (event) => {
+          if (event.target === overlay) {
+            close(false);
+          }
+          const action = event.target.getAttribute && event.target.getAttribute("data-action");
+          if (action === "confirm") {
+            close(true);
+          } else if (action === "cancel") {
+            close(false);
+          }
+        });
+        document.body.appendChild(overlay);
+      });
     }
 
     function ensureSectionStarted(key) {
@@ -1416,10 +1764,7 @@
               ${STEP_DEFS.map((step, index) => renderStepItem(step, index)).join("")}
             </div>
             <div class="sidebar-meta">
-              <strong>ID sesji: ${escapeHtml(state.studyId)}</strong>
-              <div class="status-line">Kod uczestnika: ${escapeHtml(state.participantCode || "nie podano")}</div>
-              <div class="status-line">Liczba zapisanych odpowiedzi: ${countAnsweredItems()}</div>
-              <div class="status-line">Szkic zapisuje się lokalnie w tej przeglądarce.</div>
+              <button class="reset-icon" type="button" onclick="resetAllData()" title="Rozpocznij ankietę od nowa" aria-label="Rozpocznij ankietę od nowa">↺</button>
             </div>
           </aside>
           <section class="panel">
@@ -1478,17 +1823,6 @@
         </div>
 
         <form onsubmit="submitIntro(event)" class="stack">
-          <div class="grid-two">
-            <div>
-              <label for="participantCode">Kod uczestnika (opcjonalnie)</label>
-              <input id="participantCode" name="participantCode" type="text" maxlength="40" value="${escapeHtmlAttr(state.participantCode)}" placeholder="np. P-001 lub pozostaw puste">
-            </div>
-            <div>
-              <label for="startedAtInfo">Start sesji</label>
-              <input id="startedAtInfo" type="text" value="${escapeHtmlAttr(formatDateTime(state.startedAt))}" disabled>
-            </div>
-          </div>
-
           <div class="info-block stack">
             <strong>${escapeHtml(STUDY.consentIntro)}</strong>
             <ul class="consent-list">
@@ -1496,15 +1830,14 @@
             </ul>
           </div>
 
-          <div class="check-row">
+          <div class="check-row${errorClass("consent")}">
             <input id="consent" name="consent" type="checkbox" ${state.consent ? "checked" : ""}>
             <label for="consent" style="margin:0;">
               ${escapeHtml(STUDY.consentLabel)}
             </label>
           </div>
 
-          <div class="button-row">
-            <button class="btn-ghost" type="button" onclick="resetAllData()">Rozpocznij od nowa</button>
+          <div class="button-row tight">
             <button class="btn-primary" type="submit">Dalej</button>
           </div>
         </form>
@@ -1522,8 +1855,7 @@
         <form onsubmit="submitDemographics(event)" class="stack">
           ${STUDY.demographicsFields.map((field) => renderDemographicField(field)).join("")}
 
-          <div class="button-row">
-            <button class="btn-secondary" type="button" onclick="resetAllData()">Rozpocznij od nowa</button>
+          <div class="button-row tight">
             <button class="btn-primary" type="submit">Przejdź do kwestionariusza</button>
           </div>
         </form>
@@ -1534,19 +1866,21 @@
       const current = state.demographics[field.id] || "";
       if (field.type === "number") {
         return `
-          <div class="form-field">
+          <div class="form-field${errorClass(field.id)}">
             <label for="${escapeHtmlAttr(field.id)}">${escapeHtml(field.label)}</label>
             <input id="${escapeHtmlAttr(field.id)}" name="${escapeHtmlAttr(field.id)}" type="number" min="0" max="120" value="${escapeHtmlAttr(current)}" placeholder="np. 34">
+            ${errorNote(field.id)}
           </div>
         `;
       }
       return `
-        <div class="form-field">
+        <div class="form-field${errorClass(field.id)}">
           <label for="${escapeHtmlAttr(field.id)}">${escapeHtml(field.label)}</label>
           <select id="${escapeHtmlAttr(field.id)}" name="${escapeHtmlAttr(field.id)}">
             <option value="">Wybierz</option>
             ${field.options.map((option) => `<option value="${escapeHtmlAttr(option)}" ${current === option ? "selected" : ""}>${escapeHtml(option)}</option>`).join("")}
           </select>
+          ${errorNote(field.id)}
         </div>
       `;
     }
@@ -1565,7 +1899,7 @@
 
         <form onsubmit="submitLogic(event)" class="stack">
           ${STUDY.logicTasks.map((task) => `
-            <div class="task-card">
+            <div class="task-card${errorClass(task.id)}" data-error-key="${escapeHtmlAttr(task.id)}">
               <h3>${escapeHtml(task.title)}</h3>
               <p style="margin-bottom: 14px;">${escapeHtml(task.prompt)}</p>
               <div class="choices">
@@ -1579,11 +1913,11 @@
                   </label>
                 `).join("")}
               </div>
+              ${errorNote(task.id)}
             </div>
           `).join("")}
 
-          <div class="button-row">
-            <button class="btn-secondary" type="button" onclick="resetLogicAnswers()">Wyczyść odpowiedzi tego kroku</button>
+          <div class="button-row tight">
             <button class="btn-primary" type="submit">Przejdź do scenariuszy</button>
           </div>
         </form>
@@ -1604,29 +1938,21 @@
 
         <form onsubmit="submitOpinions(event)" class="stack">
           ${STUDY.opinionStatements.map((statement, index) => `
-            <div class="matrix-row">
+            <div class="matrix-row${errorClass(statement.id)}" data-error-key="${escapeHtmlAttr(statement.id)}">
               <div class="statement"><span class="statement-num">${index + 1}.</span> ${escapeHtml(statement.text)}</div>
-              <div class="likert-group">
+              <div class="likert-group likert-scale">
                 ${LIKERT.map((item) => `
-                  <label class="likert-option" title="${escapeHtmlAttr(item.label)}">
+                  <label class="likert-option">
                     <input type="radio" name="${escapeHtmlAttr(statement.id)}" value="${escapeHtmlAttr(item.value)}" ${state.opinions[statement.id] === item.value ? "checked" : ""}>
-                    <span>${escapeHtml(item.value)}</span>
+                    <span><span class="lk-num">${escapeHtml(item.value)}</span><span class="lk-label">${escapeHtml(item.label)}</span></span>
                   </label>
                 `).join("")}
               </div>
+              ${errorNote(statement.id)}
             </div>
           `).join("")}
 
-          <div class="scale-legend">
-            ${LIKERT.map((item) => {
-              const isEndpoint = item.value === "1" || item.value === "7";
-              const text = `<strong>${escapeHtml(item.value)}</strong> – ${escapeHtml(item.label)}`;
-              return `<span>${isEndpoint ? `<strong>${text}</strong>` : text}</span>`;
-            }).join("")}
-          </div>
-
-          <div class="button-row">
-            <button class="btn-secondary" type="button" onclick="resetOpinionAnswers()">Wyczyść odpowiedzi tego kroku</button>
+          <div class="button-row tight">
             <button class="btn-primary" type="submit">Przejdź do testu</button>
           </div>
         </form>
@@ -1656,9 +1982,9 @@
       `;
     }
 
-    function renderRatingScale(name, current, labels) {
+    function renderRatingScale(name, current, labels, hasErr) {
       return `
-        <div class="choices">
+        <div class="choices${hasErr ? " field-error" : ""}">
           ${[1, 2, 3, 4, 5].map((value) => `
             <label class="choice">
               <input type="radio" name="${escapeHtmlAttr(name)}" value="${value}" ${String(current || "") === String(value) ? "checked" : ""}>
@@ -1669,6 +1995,7 @@
             </label>
           `).join("")}
         </div>
+        ${hasErr ? errorNote(name) : ""}
       `;
     }
 
@@ -1676,7 +2003,6 @@
       ensureSectionStarted("scenarios");
       const scenario = state.scenarios[state.currentScenarioIndex];
       const response = state.scenarioResponses[scenario.id] || {};
-      const counts = getScenarioCounts();
       const isLast = state.currentScenarioIndex === state.scenarios.length - 1;
       return `
         <div class="section-head">
@@ -1688,24 +2014,18 @@
 
         <div class="tag-row">
           <span class="scenario-counter">Scenariusz ${state.currentScenarioIndex + 1} z 9</span>
-          <span class="mini-tag">Mało: ${counts.low}</span>
-          <span class="mini-tag">Średnio: ${counts.medium}</span>
-          <span class="mini-tag">Dużo: ${counts.high}</span>
         </div>
 
         <div class="task-card">
-          <div class="tag-row" style="margin-bottom: 12px;">
-            <span class="badge">${escapeHtml(scenario.categoryLabel)}</span>
-          </div>
           <h3>${escapeHtml(scenario.title)}</h3>
           <p style="margin-bottom: 16px;">${escapeHtml(scenario.prompt)}</p>
 
           ${renderInfoTable(scenario.optionNoun, scenario.attributes)}
 
           <form onsubmit="submitScenario(event)" class="stack" style="margin-top: 18px;">
-            <div class="stack">
+            <div class="stack" data-error-key="scenarioAnswer">
               <strong>Wybierz odpowiedź:</strong>
-              <div class="choices">
+              <div class="choices${errorClass("scenarioAnswer")}">
                 ${scenario.options.map((option) => `
                   <label class="choice">
                     <input type="radio" name="scenarioAnswer" value="${escapeHtmlAttr(option.value)}" ${response.answer === option.value ? "checked" : ""}>
@@ -1716,19 +2036,20 @@
                   </label>
                 `).join("")}
               </div>
+              ${errorNote("scenarioAnswer")}
             </div>
 
             <div class="stack">
               <strong>Oceń, jak łatwo było Ci podjąć decyzję (1 – bardzo łatwo, 5 – bardzo trudno):</strong>
-              ${renderRatingScale("scenarioDifficulty", response.difficulty, DIFFICULTY_LABELS)}
+              ${renderRatingScale("scenarioDifficulty", response.difficulty, DIFFICULTY_LABELS, hasError("scenarioDifficulty"))}
             </div>
 
             <div class="stack">
               <strong>Oceń, jak bardzo byłeś(-aś) pewny(-a) swojej decyzji (1 – bardzo niepewny, 5 – bardzo pewny):</strong>
-              ${renderRatingScale("scenarioConfidence", response.confidence, CONFIDENCE_LABELS)}
+              ${renderRatingScale("scenarioConfidence", response.confidence, CONFIDENCE_LABELS, hasError("scenarioConfidence"))}
             </div>
 
-            <div class="button-row">
+            <div class="button-row tight">
               <button class="btn-primary" type="submit">${isLast ? "Przejdź do zadań z dopytaniem" : "Zapisz i następny scenariusz"}</button>
             </div>
           </form>
@@ -1777,18 +2098,10 @@
             `).join("")}
           </div>
 
-          <div class="stack">
-            <div class="choices">
-              <button class="data-chip" type="button" onclick="requestMoreInfo('${escapeHtmlJs(task.id)}')" ${remaining === 0 ? "disabled" : ""}>
-                ${remaining === 0 ? "Wszystkie informacje zostały odsłonięte" : "Chcę zobaczyć więcej informacji"}
-              </button>
-            </div>
-          </div>
-
           <form onsubmit="submitFollowup(event)" class="stack">
-            <div class="stack">
+            <div class="stack" data-error-key="followupAnswer">
               <strong>Wybierz odpowiedź końcową:</strong>
-              <div class="choices">
+              <div class="choices${errorClass("followupAnswer")}">
                 ${options.map((option) => `
                   <label class="choice">
                     <input type="radio" name="followupAnswer" value="${escapeHtmlAttr(option.value)}" ${response.answer === option.value ? "checked" : ""}>
@@ -1798,16 +2111,22 @@
                     </span>
                   </label>
                 `).join("")}
+                <button class="choice choice-more" type="button" onclick="requestMoreInfo('${escapeHtmlJs(task.id)}')" ${remaining === 0 ? "disabled" : ""}>
+                  <span class="option-card more">
+                    <strong>D</strong>
+                    <span>${remaining === 0 ? "Wszystkie informacje zostały odsłonięte" : "Chcę zobaczyć więcej informacji"}</span>
+                  </span>
+                </button>
               </div>
+              ${errorNote("followupAnswer")}
             </div>
 
             <div class="stack">
               <strong>Jak bardzo jesteś pewny(-a) swojej odpowiedzi (1 – bardzo niepewny, 5 – bardzo pewny):</strong>
-              ${renderRatingScale("followupConfidence", response.confidence, CONFIDENCE_LABELS)}
+              ${renderRatingScale("followupConfidence", response.confidence, CONFIDENCE_LABELS, hasError("followupConfidence"))}
             </div>
 
-            <div class="button-row">
-              <button class="btn-secondary" type="button" onclick="resetFollowupTask('${escapeHtmlJs(task.id)}')">Wyczyść to zadanie</button>
+            <div class="button-row tight">
               <button class="btn-primary" type="submit">${isLast ? "Przejdź do podsumowania" : "Zapisz i następne zadanie"}</button>
             </div>
           </form>
@@ -1821,6 +2140,7 @@
         completeSection("summary");
         saveState();
       }
+      ensureSubmission();
       return `
         <div class="section-head">
           <div class="eyebrow">Krok 7 z 7</div>
@@ -1828,18 +2148,34 @@
         </div>
 
         <div class="info-block stack">
-          <p>${escapeHtml(STUDY.outro)}</p>
+          <p><strong>Dziękujemy za wypełnienie ankiety.</strong></p>
         </div>
 
-        <div class="summary-actions">
-          <button class="btn-primary" type="button" onclick="exportCsv()">Eksportuj CSV</button>
-          <button class="btn-secondary" type="button" onclick="exportExcel()">Eksportuj Excel</button>
-        </div>
-
-        <div class="button-row tight">
-          <button class="btn-secondary" type="button" onclick="resetAllData()">Rozpocznij od nowa</button>
-        </div>
+        ${renderSubmissionStatus()}
       `;
+    }
+
+    function renderSubmissionStatus() {
+      if (!isApiConfigured()) {
+        return `<div class="submit-status">Badanie zostało zakończone pomyślnie.</div>`;
+      }
+      if (state.submissionStatus === "sending") {
+        return `<div class="submit-status">Trwa zapisywanie odpowiedzi…</div>`;
+      }
+      if (state.submissionStatus === "sent") {
+        return `<div class="submit-status">Twoje odpowiedzi zostały zapisane. Badanie zostało zakończone pomyślnie.</div>`;
+      }
+      if (state.submissionStatus === "error") {
+        return `
+          <div class="submit-status error">
+            <div>Nie udało się jeszcze zapisać odpowiedzi na serwerze. Sprawdź połączenie z internetem i spróbuj ponownie.</div>
+            <div class="button-row tight">
+              <button class="btn-primary" type="button" onclick="retrySubmission()">Spróbuj ponownie</button>
+            </div>
+          </div>
+        `;
+      }
+      return `<div class="submit-status">Przygotowywanie zapisu…</div>`;
     }
 
     function ensureStepStarted() {
@@ -1869,12 +2205,13 @@
     function submitIntro(event) {
       event.preventDefault();
       const form = event.target;
-      const consent = form.consent.checked;
+      const consentEl = form.querySelector("#consent");
+      const consent = Boolean(consentEl && consentEl.checked);
       if (!consent) {
-        return setMessage("Aby przejść dalej, trzeba zaznaczyć zgodę na udział w badaniu.", "warning");
+        return failValidation(["consent"]);
       }
       clearMessage();
-      state.participantCode = form.participantCode.value.trim();
+      clearErrors();
       state.consent = consent;
       completeSection("intro");
       goToNextStep();
@@ -1884,13 +2221,20 @@
       event.preventDefault();
       const form = event.target;
       const demographics = {};
+      const missing = [];
       for (const field of STUDY.demographicsFields) {
-        demographics[field.id] = (form[field.id].value || "").trim();
+        const el = form.querySelector(`#${field.id}`);
+        demographics[field.id] = ((el && el.value) || "").trim();
+        if (!demographics[field.id]) {
+          missing.push(field.id);
+        }
       }
-      if (!validateDemographics(demographics)) {
-        return setMessage("Uzupełnij wszystkie pytania metryczki, żeby przejść dalej.", "warning");
+      if (missing.length) {
+        state.demographics = demographics;
+        return failValidation(missing);
       }
       clearMessage();
+      clearErrors();
       state.demographics = demographics;
       completeSection("demographics");
       goToNextStep();
@@ -1900,17 +2244,21 @@
       event.preventDefault();
       const formData = new FormData(event.target);
       const answers = {};
+      const missing = [];
       for (const task of STUDY.logicTasks) {
         const value = formData.get(task.id);
         if (!value) {
-          return setMessage("Odpowiedz na wszystkie zadania testowe, zanim przejdziesz dalej.", "warning");
+          missing.push(task.id);
+        } else {
+          answers[task.id] = String(value);
         }
-        answers[task.id] = String(value);
       }
-      if (!validateLogicAnswers(STUDY.logicTasks, answers)) {
-        return setMessage("Odpowiedz na wszystkie zadania testowe, zanim przejdziesz dalej.", "warning");
+      if (missing.length) {
+        state.logicAnswers = answers;
+        return failValidation(missing);
       }
       clearMessage();
+      clearErrors();
       state.logicAnswers = answers;
       completeSection("logic");
       goToNextStep();
@@ -1920,17 +2268,21 @@
       event.preventDefault();
       const formData = new FormData(event.target);
       const answers = {};
+      const missing = [];
       for (const statement of STUDY.opinionStatements) {
         const value = formData.get(statement.id);
         if (!value) {
-          return setMessage("Zaznacz odpowiedź dla każdego stwierdzenia w ankiecie opinii.", "warning");
+          missing.push(statement.id);
+        } else {
+          answers[statement.id] = String(value);
         }
-        answers[statement.id] = String(value);
       }
-      if (!validateOpinionAnswers(STUDY.opinionStatements, answers)) {
-        return setMessage("Zaznacz odpowiedź dla każdego stwierdzenia w ankiecie opinii.", "warning");
+      if (missing.length) {
+        state.opinions = answers;
+        return failValidation(missing);
       }
       clearMessage();
+      clearErrors();
       state.opinions = answers;
       completeSection("opinions");
       goToNextStep();
@@ -1942,10 +2294,15 @@
       const answer = formData.get("scenarioAnswer");
       const difficulty = formData.get("scenarioDifficulty");
       const confidence = formData.get("scenarioConfidence");
-      if (!answer || !difficulty || !confidence) {
-        return setMessage("Wybierz odpowiedź oraz oceń trudność i pewność (1-5).", "warning");
+      const missing = [];
+      if (!answer) { missing.push("scenarioAnswer"); }
+      if (!difficulty) { missing.push("scenarioDifficulty"); }
+      if (!confidence) { missing.push("scenarioConfidence"); }
+      if (missing.length) {
+        return failValidation(missing);
       }
       clearMessage();
+      clearErrors();
       const scenario = state.scenarios[state.currentScenarioIndex];
       const previous = state.scenarioResponses[scenario.id] || {};
       const completedAt = new Date().toISOString();
@@ -1960,13 +2317,13 @@
       if (state.currentScenarioIndex < state.scenarios.length - 1) {
         state.currentScenarioIndex += 1;
         ensureSectionStarted("scenarios");
+        saveState();
+        renderApp();
+        scrollToTop();
       } else {
         completeSection("scenarios");
         goToNextStep();
-        return;
       }
-      saveState();
-      renderApp();
     }
 
     function submitFollowup(event) {
@@ -1974,10 +2331,14 @@
       const formData = new FormData(event.target);
       const answer = formData.get("followupAnswer");
       const confidence = formData.get("followupConfidence");
-      if (!answer || !confidence) {
-        return setMessage("Wybierz odpowiedź końcową i oceń pewność (1-5).", "warning");
+      const missing = [];
+      if (!answer) { missing.push("followupAnswer"); }
+      if (!confidence) { missing.push("followupConfidence"); }
+      if (missing.length) {
+        return failValidation(missing);
       }
       clearMessage();
+      clearErrors();
       const task = STUDY.followUpTasks[state.currentFollowupIndex];
       const response = getFollowupResponse(task.id);
       const completedAt = new Date().toISOString();
@@ -1989,6 +2350,7 @@
         state.currentFollowupIndex += 1;
         saveState();
         renderApp();
+        scrollToTop();
         return;
       }
       completeSection("followups");
@@ -1997,8 +2359,10 @@
 
     function goToNextStep() {
       state.currentStep = Math.min(state.currentStep + 1, STEP_DEFS.length - 1);
+      clearErrors();
       saveState();
       renderApp();
+      scrollToTop();
     }
 
     function getFollowupResponse(taskId) {
@@ -2031,64 +2395,95 @@
       renderApp();
     }
 
-    function resetLogicAnswers() {
-      state.logicAnswers = {};
-      clearMessage();
-      saveState();
-      renderApp();
-    }
-
-    function resetOpinionAnswers() {
-      state.opinions = {};
-      clearMessage();
-      saveState();
-      renderApp();
-    }
-
-    function resetFollowupTask(taskId) {
-      const response = getFollowupResponse(taskId);
-      response.reveals = 0;
-      response.answer = "";
-      response.confidence = "";
-      response.startedAt = new Date().toISOString();
-      response.completedAt = "";
-      response.durationSeconds = "";
-      clearMessage();
-      saveState();
-      renderApp();
-    }
-
-    function clearSavedDraft() {
-      clearDraftStorage();
-      setMessage("Zapis roboczy został usunięty z pamięci przeglądarki.", "success");
-    }
-
     function resetAllData() {
-      if (!confirm("Czy na pewno chcesz wyczyścić całą bieżącą sesję?")) {
+      confirmModal("Czy na pewno chcesz usunąć wszystkie odpowiedzi i rozpocząć ankietę od początku?").then((confirmed) => {
+        if (!confirmed) {
+          return;
+        }
+        clearDraftStorage();
+        resetState();
+        scrollToTop();
+      });
+    }
+
+    // === WYSYŁKA WYNIKÓW NA SERWER (Google Apps Script -> Google Drive) ==========
+    function buildSubmissionPayload() {
+      return {
+        studyId: state.studyId,
+        scenarioVariant: state.scenarioVariant || null,
+        startedAt: state.startedAt,
+        finishedAt: state.finishedAt,
+        consent: state.consent,
+        demographics: state.demographics,
+        sectionTimings: state.sectionTimings,
+        answers: buildAnswerRows(),
+        metadata: buildMetadataRows(),
+        raw: {
+          logicAnswers: state.logicAnswers,
+          opinions: state.opinions,
+          scenarioResponses: state.scenarioResponses,
+          followups: state.followups
+        }
+      };
+    }
+
+    function ensureSubmission() {
+      if (!isApiConfigured()) {
         return;
       }
-      clearDraftStorage();
-      resetState();
+      if (state.submissionStatus === "sent" || state.submissionStatus === "sending") {
+        return;
+      }
+      submitResultsToServer();
     }
 
-    function countAnsweredItems() {
-      const logic = Object.keys(state.logicAnswers).length;
-      const opinions = Object.keys(state.opinions).length;
-      const scenarios = Object.values(state.scenarioResponses).filter((item) => item.answer).length;
-      const followups = state.followups.filter((item) => item.answer).length;
-      const demographics = Object.values(state.demographics).filter(Boolean).length;
-      return logic + opinions + scenarios + followups + demographics + (state.consent ? 1 : 0);
+    async function submitResultsToServer() {
+      if (!isApiConfigured()) {
+        return;
+      }
+      state.submissionStatus = "sending";
+      saveState();
+      renderApp();
+      try {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(buildSubmissionPayload()),
+          redirect: "follow",
+          signal: controller.signal
+        });
+        clearTimeout(timer);
+        let ok = response.ok;
+        try {
+          const text = await response.text();
+          ok = ok && /"status"\s*:\s*"saved"/.test(text);
+        } catch (readErr) {
+          ok = false;
+        }
+        if (!ok) {
+          throw new Error("Serwer nie potwierdził zapisu (sprawdź publiczny dostęp wdrożenia Apps Script).");
+        }
+        state.submissionStatus = "sent";
+        state.submittedAt = new Date().toISOString();
+      } catch (error) {
+        console.warn("Nie udało się wysłać wyników na serwer.", error);
+        state.submissionStatus = "error";
+      }
+      saveState();
+      renderApp();
     }
 
-    function getScenarioCounts() {
-      return countScenarioLevels(state.scenarios);
+    function retrySubmission() {
+      submitResultsToServer();
     }
 
     function buildMetadataRows() {
       const rows = [
         ["pole", "wartość"],
         ["id_uczestnika", state.studyId],
-        ["kod_uczestnika", state.participantCode || ""],
+        ["wariant_scenariusza", state.scenarioVariant || ""],
         ["data_badania", formatDateOnly(state.startedAt)],
         ["godzina_rozpoczecia", formatTimeOnly(state.startedAt)],
         ["godzina_zakonczenia", formatTimeOnly(state.finishedAt)],
@@ -2190,7 +2585,7 @@
       const timeSource = info.completedAt || info.startedAt || state.startedAt;
       return {
         id_uczestnika: state.studyId,
-        kod_uczestnika: state.participantCode || "",
+        wariant_scenariusza: state.scenarioVariant || "",
         data_badania: formatDateOnly(state.startedAt),
         godzina_wykonania: formatTimeOnly(timeSource),
         sekcja: section,
@@ -2205,268 +2600,6 @@
         ocena_trudnosci: info.difficulty || "",
         liczba_dodatkowych_informacji: typeof info.extraRequestsCount !== "undefined" ? info.extraRequestsCount : ""
       };
-    }
-
-    function exportCsv() {
-      const rows = buildAnswerRows();
-      const headers = Object.keys(rows[0] || {});
-      const lines = [headers.join(",")];
-      rows.forEach((row) => {
-        lines.push(headers.map((header) => csvValue(row[header])).join(","));
-      });
-      downloadFile(`ankieta-${fileStamp()}.csv`, lines.join("\r\n"), "text/csv;charset=utf-8");
-      setMessage("Wyeksportowano plik CSV z odpowiedziami.", "success");
-    }
-
-    function exportExcel() {
-      const metadata = buildMetadataRows();
-      const answers = buildAnswerRows();
-      const answerTable = [
-        Object.keys(answers[0] || {}),
-        ...answers.map((row) => Object.values(row))
-      ];
-      const xlsx = buildXlsx([
-        { name: "Metadane", rows: metadata },
-        { name: "Odpowiedzi", rows: answerTable }
-      ]);
-      downloadBlob(`ankieta-${fileStamp()}.xlsx`, xlsx,
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-      setMessage("Wyeksportowano plik XLSX z odpowiedziami.", "success");
-    }
-
-    function columnLetter(index) {
-      let result = "";
-      let value = index;
-      while (value >= 0) {
-        result = String.fromCharCode((value % 26) + 65) + result;
-        value = Math.floor(value / 26) - 1;
-      }
-      return result;
-    }
-
-    function buildSheetXml(rows) {
-      const body = rows.map((row, rowIndex) => {
-        const cells = row.map((cell, colIndex) => {
-          const ref = columnLetter(colIndex) + (rowIndex + 1);
-          const styleAttr = rowIndex === 0 ? ' s="1"' : "";
-          return `<c r="${ref}"${styleAttr} t="inlineStr"><is><t xml:space="preserve">${escapeXml(String(cell ?? ""))}</t></is></c>`;
-        }).join("");
-        return `<row r="${rowIndex + 1}">${cells}</row>`;
-      }).join("");
-      return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>` +
-        `<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">` +
-        `<sheetData>${body}</sheetData></worksheet>`;
-    }
-
-    function buildXlsx(sheets) {
-      const files = [];
-      const contentTypes = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>` +
-        `<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">` +
-        `<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>` +
-        `<Default Extension="xml" ContentType="application/xml"/>` +
-        `<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>` +
-        `<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>` +
-        sheets.map((sheet, index) => `<Override PartName="/xl/worksheets/sheet${index + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join("") +
-        `</Types>`;
-      files.push({ name: "[Content_Types].xml", data: contentTypes });
-
-      files.push({
-        name: "_rels/.rels",
-        data: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>` +
-          `<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">` +
-          `<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>` +
-          `</Relationships>`
-      });
-
-      const sheetTags = sheets.map((sheet, index) => `<sheet name="${escapeXml(sheet.name)}" sheetId="${index + 1}" r:id="rId${index + 1}"/>`).join("");
-      files.push({
-        name: "xl/workbook.xml",
-        data: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>` +
-          `<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">` +
-          `<sheets>${sheetTags}</sheets></workbook>`
-      });
-
-      const sheetRels = sheets.map((sheet, index) => `<Relationship Id="rId${index + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${index + 1}.xml"/>`).join("");
-      files.push({
-        name: "xl/_rels/workbook.xml.rels",
-        data: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>` +
-          `<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">` +
-          sheetRels +
-          `<Relationship Id="rId${sheets.length + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>` +
-          `</Relationships>`
-      });
-
-      files.push({
-        name: "xl/styles.xml",
-        data: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>` +
-          `<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">` +
-          `<fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts>` +
-          `<fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills>` +
-          `<borders count="1"><border/></borders>` +
-          `<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>` +
-          `<cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>` +
-          `<xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/></cellXfs>` +
-          `</styleSheet>`
-      });
-
-      sheets.forEach((sheet, index) => {
-        files.push({ name: `xl/worksheets/sheet${index + 1}.xml`, data: buildSheetXml(sheet.rows) });
-      });
-
-      return zipStore(files);
-    }
-
-    const CRC_TABLE = (function () {
-      const table = new Uint32Array(256);
-      for (let n = 0; n < 256; n += 1) {
-        let c = n;
-        for (let k = 0; k < 8; k += 1) {
-          c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
-        }
-        table[n] = c >>> 0;
-      }
-      return table;
-    })();
-
-    function crc32(bytes) {
-      let crc = 0xFFFFFFFF;
-      for (let i = 0; i < bytes.length; i += 1) {
-        crc = CRC_TABLE[(crc ^ bytes[i]) & 0xFF] ^ (crc >>> 8);
-      }
-      return (crc ^ 0xFFFFFFFF) >>> 0;
-    }
-
-    function zipStore(files) {
-      const encoder = new TextEncoder();
-      const chunks = [];
-      const central = [];
-      let offset = 0;
-
-      function pushUint16(arr, value) {
-        arr.push(value & 0xFF, (value >>> 8) & 0xFF);
-      }
-      function pushUint32(arr, value) {
-        arr.push(value & 0xFF, (value >>> 8) & 0xFF, (value >>> 16) & 0xFF, (value >>> 24) & 0xFF);
-      }
-
-      files.forEach((file) => {
-        const nameBytes = encoder.encode(file.name);
-        const dataBytes = encoder.encode(file.data);
-        const crc = crc32(dataBytes);
-
-        const local = [];
-        pushUint32(local, 0x04034b50);
-        pushUint16(local, 20);
-        pushUint16(local, 0x0800);
-        pushUint16(local, 0);
-        pushUint16(local, 0);
-        pushUint16(local, 0);
-        pushUint32(local, crc);
-        pushUint32(local, dataBytes.length);
-        pushUint32(local, dataBytes.length);
-        pushUint16(local, nameBytes.length);
-        pushUint16(local, 0);
-        const localHeader = new Uint8Array(local);
-
-        chunks.push(localHeader, nameBytes, dataBytes);
-
-        const centralEntry = [];
-        pushUint32(centralEntry, 0x02014b50);
-        pushUint16(centralEntry, 20);
-        pushUint16(centralEntry, 20);
-        pushUint16(centralEntry, 0x0800);
-        pushUint16(centralEntry, 0);
-        pushUint16(centralEntry, 0);
-        pushUint16(centralEntry, 0);
-        pushUint32(centralEntry, crc);
-        pushUint32(centralEntry, dataBytes.length);
-        pushUint32(centralEntry, dataBytes.length);
-        pushUint16(centralEntry, nameBytes.length);
-        pushUint16(centralEntry, 0);
-        pushUint16(centralEntry, 0);
-        pushUint16(centralEntry, 0);
-        pushUint16(centralEntry, 0);
-        pushUint32(centralEntry, 0);
-        pushUint32(centralEntry, offset);
-        central.push(new Uint8Array(centralEntry), nameBytes);
-
-        offset += localHeader.length + nameBytes.length + dataBytes.length;
-      });
-
-      const centralStart = offset;
-      let centralSize = 0;
-      central.forEach((part) => { centralSize += part.length; });
-
-      const end = [];
-      pushUint32(end, 0x06054b50);
-      pushUint16(end, 0);
-      pushUint16(end, 0);
-      pushUint16(end, files.length);
-      pushUint16(end, files.length);
-      pushUint32(end, centralSize);
-      pushUint32(end, centralStart);
-      pushUint16(end, 0);
-
-      const allParts = chunks.concat(central, [new Uint8Array(end)]);
-      let totalLength = 0;
-      allParts.forEach((part) => { totalLength += part.length; });
-      const result = new Uint8Array(totalLength);
-      let position = 0;
-      allParts.forEach((part) => {
-        result.set(part, position);
-        position += part.length;
-      });
-      return result;
-    }
-
-    function downloadRequirementsNote() {
-      const content = [
-        "Lista kluczowych punktów [Do ustalenia] i [Do przygotowania materiału]",
-        "",
-        "1. Finalne treści wszystkich pytań, scenariuszy i odpowiedzi A/B/C.",
-        "2. Materiały obrazkowe do zadań testowych wraz z prawem do użycia.",
-        "3. Ostateczny podział scenariuszy na mało / średnio / dużo informacji.",
-        "4. Dokładna treść dodatkowych danych możliwych do odsłonięcia w 2 zadaniach.",
-        "5. Docelowy format eksportu: lista kolumn, identyfikatory, czasy, znaczniki czasu.",
-        "6. Treść zgody badawczej, informacji o badaniu i wymagania RODO/etyczne.",
-        "7. Decyzja: wersja tylko offline czy finalnie także online z bazą danych.",
-        "8. Wymagania wizualne: prosty formularz czy bardziej testowy interfejs."
-      ].join("\\r\\n");
-      downloadFile("do-ustalenia-i-materialy.txt", content, "text/plain;charset=utf-8");
-      setMessage("Pobrano skróconą checklistę [Do ustalenia] i [Do przygotowania materiału].", "success");
-    }
-
-    function downloadFile(filename, content, mimeType) {
-      const blob = new Blob(["\uFEFF", content], { type: mimeType });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      URL.revokeObjectURL(url);
-    }
-
-    function downloadBlob(filename, bytes, mimeType) {
-      const blob = new Blob([bytes], { type: mimeType });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      URL.revokeObjectURL(url);
-    }
-
-    function fileStamp() {
-      return new Date().toISOString().replace(/[:.]/g, "-");
-    }
-
-    function csvValue(value) {
-      const stringValue = String(value ?? "");
-      return `"${stringValue.replace(/"/g, '""')}"`;
     }
 
     function formatDateOnly(value) {
@@ -2512,10 +2645,6 @@
         .replaceAll("'", "\\'");
     }
 
-    function escapeXml(value) {
-      return escapeHtml(value);
-    }
-
     window.__ANKIETA_TEST_API__ = {
       getState: () => JSON.parse(JSON.stringify(state)),
       getStepId: () => STEP_DEFS[state.currentStep].id
@@ -2528,14 +2657,8 @@
     window.submitScenario = submitScenario;
     window.submitFollowup = submitFollowup;
     window.requestMoreInfo = requestMoreInfo;
-    window.resetLogicAnswers = resetLogicAnswers;
-    window.resetOpinionAnswers = resetOpinionAnswers;
-    window.resetFollowupTask = resetFollowupTask;
     window.resetAllData = resetAllData;
-    window.clearSavedDraft = clearSavedDraft;
-    window.exportCsv = exportCsv;
-    window.exportExcel = exportExcel;
-    window.downloadRequirementsNote = downloadRequirementsNote;
+    window.retrySubmission = retrySubmission;
   </script>
 </body>
 </html>
