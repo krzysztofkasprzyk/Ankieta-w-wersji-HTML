@@ -4,6 +4,7 @@ Ankieta badawcza dotycząca procesów decyzyjnych, działająca w całości w pr
 jako **pojedynczy plik `ankieta.html`** — bez instalacji, bez serwera, bez połączenia z internetem.
 Cała logika (JavaScript) jest wbudowana w plik HTML.
 
+
 ## Czym jest ten program
 
 Interaktywny kwestionariusz prowadzący uczestnika przez 7 kroków:
