@@ -6,6 +6,7 @@ Cała logika (JavaScript) jest wbudowana w plik HTML.
 
 
 ## Czym jest ten program
+#test 
 
 Interaktywny kwestionariusz prowadzący uczestnika przez 7 kroków:
 
