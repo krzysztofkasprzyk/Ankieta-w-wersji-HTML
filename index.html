@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ankieta badawcza - prototyp</title>
+  <title>Ankieta badawcza</title>
   <style>
     :root {
       --bg: #f7f2e8;
@@ -30,9 +30,15 @@
       box-sizing: border-box;
     }
 
+    html {
+      overflow-x: hidden;
+    }
+
     body {
       margin: 0;
       min-height: 100vh;
+      overflow-x: hidden;
+      max-width: 100%;
       font-family: var(--font-body);
       font-size: 16px;
       -webkit-text-size-adjust: 100%;
@@ -46,6 +52,7 @@
 
     .page {
       max-width: 1160px;
+      width: 100%;
       margin: 0 auto;
       padding: 28px 18px 40px;
     }
@@ -114,6 +121,7 @@
       margin-top: 24px;
       grid-template-columns: 290px minmax(0, 1fr);
       align-items: start;
+      max-width: 100%;
     }
 
     .sidebar,
@@ -140,6 +148,8 @@
       display: grid;
       gap: 22px;
       align-content: start;
+      min-width: 0;
+      scroll-margin-top: 14px;
     }
 
     .step-list {
@@ -596,6 +606,8 @@
       .scale-pill {
         min-width: 0;
       }
+
+
     }
 
     .info-block {
@@ -710,7 +722,7 @@
     /* Skala Likerta 1-7 z opisem przy kazdej odpowiedzi */
     .likert-scale {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(min(215px, 100%), 1fr));
       gap: 6px;
     }
 
@@ -913,7 +925,7 @@
   <div class="page">
     <header class="hero">
       <div class="hero-copy">
-        <h1>Ankieta badawcza</h1>
+        <h1>Ankieta badawcza - ver.1</h1>
       </div>
     </header>
 
@@ -1035,6 +1047,25 @@
 
     function isApiConfigured() {
       return typeof API_URL === "string" && API_URL.indexOf("exec") !== -1 && API_URL.indexOf("xxxx") === -1;
+    }
+
+    // Czy strona jest serwowana bezpośrednio z Google Apps Script (tryb "wszystko w Apps Script").
+    // Wtedy używamy google.script.run zamiast fetch(API_URL) — bez adresu, bez CORS.
+    function hasAppsScriptRuntime() {
+      return typeof google !== "undefined" && google && google.script && typeof google.script.run !== "undefined";
+    }
+
+    // Opakowuje wywołanie funkcji serwerowej Apps Script w Promise.
+    function runServer(fnName, arg) {
+      return new Promise((resolve, reject) => {
+        try {
+          google.script.run
+            .withSuccessHandler(resolve)
+            .withFailureHandler(reject)[fnName](arg);
+        } catch (err) {
+          reject(err);
+        }
+      });
     }
 
     const STORAGE_KEY = "ankieta-zl2-draft";
@@ -1514,7 +1545,18 @@
     }
 
     async function assignVariant() {
-      // Priorytet: serwerowy licznik rotacyjny (równy rozkład 1/2/3 między respondentami).
+      // Priorytet 1: strona serwowana z Apps Script -> natywne google.script.run (bez adresu/CORS).
+      if (hasAppsScriptRuntime()) {
+        try {
+          const variant = await runServer("apiAssign");
+          if (variant === 1 || variant === 2 || variant === 3) {
+            return variant;
+          }
+        } catch (error) {
+          console.warn("google.script.run apiAssign nie zadziałał, próbuję dalej.", error);
+        }
+      }
+      // Priorytet 2: serwerowy licznik rotacyjny przez fetch (gdy strona na GitHub Pages).
       if (isApiConfigured()) {
         try {
           const controller = new AbortController();
@@ -1602,7 +1644,7 @@
 
     function saveState() {
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       } catch (error) {
         console.warn("Nie udało się zapisać szkicu.", error);
       }
@@ -1610,12 +1652,16 @@
 
     function loadState() {
       try {
-        const raw = localStorage.getItem(STORAGE_KEY);
+        const raw = sessionStorage.getItem(STORAGE_KEY);
         if (!raw) {
           return null;
         }
         const parsed = JSON.parse(raw);
         if (!parsed || !parsed.studyId || !Array.isArray(parsed.scenarios)) {
+          return null;
+        }
+        // Zakończona ankieta nie jest wznawiana - każde nowe wejście = nowa ankieta.
+        if (parsed.submissionStatus === "sent") {
           return null;
         }
         return parsed;
@@ -1636,7 +1682,7 @@
 
     function clearDraftStorage() {
       try {
-        localStorage.removeItem(STORAGE_KEY);
+        sessionStorage.removeItem(STORAGE_KEY);
       } catch (error) {
         console.warn("Nie udało się wyczyścić pamięci przeglądarki.", error);
       }
@@ -1683,7 +1729,24 @@
     }
 
     function scrollToTop() {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      // Kieruj na początek treści bieżącego kroku (instrukcja / kolejne zadanie),
+      // a nie na sam nagłówek strony "Ankieta badawcza".
+      const target = document.querySelector("#app .panel") || document.getElementById("app");
+      if (target && typeof target.scrollIntoView === "function") {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }
+
+    function scrollToSubmitStatus() {
+      // Na ekranie końcowym kieruj wzrok na informację o zapisie wyników.
+      const el = document.querySelector(".submit-status");
+      if (el && typeof el.scrollIntoView === "function") {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+      } else {
+        scrollToTop();
+      }
     }
 
     function scrollToFirstError() {
@@ -1967,9 +2030,9 @@
       const body = rows.map((row) => `
         <tr>
           <th scope="row">${escapeHtml(row.name)}</th>
-          <td>${escapeHtml(row.a)}</td>
-          <td>${escapeHtml(row.b)}</td>
-          <td>${escapeHtml(row.c)}</td>
+          <td data-label="${escapeHtmlAttr(noun + " A")}">${escapeHtml(row.a)}</td>
+          <td data-label="${escapeHtmlAttr(noun + " B")}">${escapeHtml(row.b)}</td>
+          <td data-label="${escapeHtmlAttr(noun + " C")}">${escapeHtml(row.c)}</td>
         </tr>
       `).join("");
       return `
@@ -2024,7 +2087,7 @@
 
           <form onsubmit="submitScenario(event)" class="stack" style="margin-top: 18px;">
             <div class="stack" data-error-key="scenarioAnswer">
-              <strong>Wybierz dobrą odpowiedź:</strong>
+              <strong>Wybierz odpowiedź:</strong>
               <div class="choices${errorClass("scenarioAnswer")}">
                 ${scenario.options.map((option) => `
                   <label class="choice">
@@ -2160,7 +2223,7 @@
         return `<div class="submit-status">Badanie zostało zakończone pomyślnie.</div>`;
       }
       if (state.submissionStatus === "sending") {
-        return `<div class="submit-status">Trwa zapisywanie odpowiedzi…</div>`;
+        return `<div class="submit-status"><strong>Zapisywanie wyników…</strong><br>Trwa zapis Twoich odpowiedzi — proszę nie wyłączać ani nie zamykać tej strony ;)</div>`;
       }
       if (state.submissionStatus === "sent") {
         return `<div class="submit-status">Twoje odpowiedzi zostały zapisane. Badanie zostało zakończone pomyślnie.</div>`;
@@ -2175,7 +2238,7 @@
           </div>
         `;
       }
-      return `<div class="submit-status">Przygotowywanie zapisu…</div>`;
+      return `<div class="submit-status"><strong>Zapisywanie wyników…</strong><br>Proszę nie wyłączać ani nie zamykać tej strony ;)</div>`;
     }
 
     function ensureStepStarted() {
@@ -2438,29 +2501,39 @@
     }
 
     async function submitResultsToServer() {
-      if (!isApiConfigured()) {
+      const useAppsScript = hasAppsScriptRuntime();
+      if (!useAppsScript && !isApiConfigured()) {
         return;
       }
       state.submissionStatus = "sending";
       saveState();
       renderApp();
+      scrollToSubmitStatus();
       try {
-        const controller = new AbortController();
-        const timer = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
-        const response = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify(buildSubmissionPayload()),
-          redirect: "follow",
-          signal: controller.signal
-        });
-        clearTimeout(timer);
-        let ok = response.ok;
-        try {
-          const text = await response.text();
-          ok = ok && /"status"\s*:\s*"saved"/.test(text);
-        } catch (readErr) {
-          ok = false;
+        const payload = buildSubmissionPayload();
+        let ok = false;
+        if (useAppsScript) {
+          // Tryb "wszystko w Apps Script": bezpośrednie wywołanie serwera, bez adresu/CORS.
+          const result = await runServer("apiSubmit", payload);
+          ok = !!(result && result.status === "saved");
+        } else {
+          const controller = new AbortController();
+          const timer = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
+          const response = await fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify(payload),
+            redirect: "follow",
+            signal: controller.signal
+          });
+          clearTimeout(timer);
+          ok = response.ok;
+          try {
+            const text = await response.text();
+            ok = ok && /"status"\s*:\s*"saved"/.test(text);
+          } catch (readErr) {
+            ok = false;
+          }
         }
         if (!ok) {
           throw new Error("Serwer nie potwierdził zapisu (sprawdź publiczny dostęp wdrożenia Apps Script).");
@@ -2473,6 +2546,7 @@
       }
       saveState();
       renderApp();
+      scrollToSubmitStatus();
     }
 
     function retrySubmission() {
